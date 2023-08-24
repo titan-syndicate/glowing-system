@@ -13,11 +13,19 @@ import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
 
 import useWebRTC from "./useWebRTC";
+import { Container, SxProps } from "@mui/material";
 
-const chatListStyle = {
+const chatListStyle: SxProps = {
   width: "100%",
   maxWidth: 360,
   bgcolor: "background.paper",
+};
+
+const containerStyle: SxProps = {
+  display: "flex",
+  flexFlow: "column",
+  gap: "16px",
+  padding: "8px",
 };
 
 const WebRTCChat: React.FC = () => {
@@ -36,38 +44,41 @@ const WebRTCChat: React.FC = () => {
   const [message, setMessage] = useState<string>("");
 
   return (
-    <div className="flex-col space-y-4">
-      <div className="flex space-x-4">
-        <div>
-          <List sx={chatListStyle}>
-            {chatLog.map((msg, index) => (
-              <>
-                <ListItem key={index}>
-                  <ListItemText primary={msg} />
-                </ListItem>
-                <Divider />
-              </>
-            ))}
-          </List>
-        </div>
-        <Input
-          onKeyDown={(ev) => {
-            if (ev.key === "Enter") {
-              ev.preventDefault();
-              sendMessage(message);
-              setMessage("");
-            }
-          }}
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-        <Button
-          variant="contained"
-          onClick={() => (sendMessage(message), setMessage(""))}
-        >
-          Send
-        </Button>
-      </div>
+    <Container sx={containerStyle}>
+      <Card variant="outlined">
+        <CardContent>
+          <div>
+            <List sx={chatListStyle}>
+              {chatLog.map((msg, index) => (
+                <>
+                  <ListItem key={index}>
+                    <ListItemText primary={msg} />
+                  </ListItem>
+                  <Divider />
+                </>
+              ))}
+            </List>
+          </div>
+          <Input
+            onKeyDown={(ev) => {
+              if (ev.key === "Enter") {
+                ev.preventDefault();
+                sendMessage(message);
+                setMessage("");
+              }
+            }}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
+          <Button
+            variant="contained"
+            onClick={() => (sendMessage(message), setMessage(""))}
+          >
+            Send
+          </Button>
+        </CardContent>
+      </Card>
+
       <Card variant="outlined">
         <CardContent>
           <Typography variant="h3" component="div">
@@ -125,6 +136,7 @@ const WebRTCChat: React.FC = () => {
           </ButtonGroup>
         </CardContent>
       </Card>
+
       <Card variant="outlined">
         <CardContent>
           <Typography variant="h3" component="div">
@@ -156,7 +168,7 @@ const WebRTCChat: React.FC = () => {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </Container>
   );
 };
 
