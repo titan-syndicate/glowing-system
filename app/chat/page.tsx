@@ -1,129 +1,108 @@
 'use client'
 import { useState } from 'react';
 
+import useWebRTC from './useWebRTC';
+
 const WebRTCChat: React.FC = () => {
-  const [peerConnection] = useState(new RTCPeerConnection());
-  const [dataChannel] = useState(peerConnection.createDataChannel('chat'));
+  const {
+    addIceCandidate,
+    chatLog,
+    createSdpOffer,
+    handleRemoteAnswer,
+    handleRemoteOffer,
+    dataChannelState,
+    iceCandidates,
+    sdpAnswer,
+    sdpOffer,
+    sendMessage,
+  } = useWebRTC();
+  // const [peerConnection] = useState(new RTCPeerConnection());
+  // const [dataChannel] = useState(peerConnection.createDataChannel('chat'));
   const [message, setMessage] = useState<string>('');
-  const [chatLog, setChatLog] = useState<string[]>([]);
+  // const [chatLog, setChatLog] = useState<string[]>([]);
 
-  const [remoteOfferInputValue, setRemoteOfferInputValue] = useState('');  // Initial value is an empty string
-  const [iceOfferInputValue, setIceOfferInputValue] = useState('');  // Initial value is an empty string
-  const [remoteAnswerInputValue, setRemoteAnswerInputValue] = useState('');  // Initial value is an empty string
+  // #region Input handlers
+  // const [remoteOfferInputValue, setRemoteOfferInputValue] = useState('');  // Initial value is an empty string
+  // const [iceCandidateInputValue, setIceCandidateInputValue] = useState('');  // Initial value is an empty string
+  // const [remoteAnswerInputValue, setRemoteAnswerInputValue] = useState('');  // Initial value is an empty string
 
-  const handleRemoteInputChange = (event) => {
-    setRemoteOfferInputValue(event.target.value);
-  }
+  // const handleRemoteInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setRemoteOfferInputValue(event?.target?.value);
+  // }
 
-  const handleIceInputChange = (event) => {
-    setIceOfferInputValue(event.target.value);
-  }
+  // const handleIceInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setIceCandidateInputValue(event.target.value);
+  // }
 
-  const handleRemoteAnswerInputChange = (event) => {
-    setRemoteAnswerInputValue(event.target.value);
-  }
-
-  // Handle the data channel events
-  dataChannel.onopen = (event) => {
-    console.log('Data channel is open and ready to be used.');
-  };
-
-  dataChannel.onmessage = (event) => {
-    console.log('Received message:', event.data);
-    setChatLog((prevLog) => [...prevLog, `Friend: ${event.data}`]);
-  };
-
-  peerConnection.ondatachannel = (event) => {
-    const receiveChannel = event.channel;
-    receiveChannel.onmessage = (event) => {
-      console.log('Received message:', event.data);
-      setChatLog((prevLog) => [...prevLog, `Friend: ${event.data}`]);
-    };
-  };
-
-  const sendMessage = () => {
-    dataChannel.send(message);
-    setChatLog((prevLog) => [...prevLog, `You: ${message}`]);
-    setMessage('');
-  };
-
-  // Additional code for SDP offer/answer and ICE candidates will go here.
-  peerConnection.onicecandidate = (event) => {
-    if (event.candidate) {
-      console.log("New ICE candidate:", JSON.stringify(event.candidate));
-    }
-  };
-
-  const addIceCandidate = () => {
-    const candidate = new RTCIceCandidate(JSON.parse(iceOfferInputValue));
-    peerConnection.addIceCandidate(candidate);
-  }
-
-  const createOffer = () => {
-    peerConnection.createOffer()
-      .then((offer) => peerConnection.setLocalDescription(offer))
-      .then(() => {
-        console.log("Offer:", JSON.stringify(peerConnection.localDescription));
-      });
-  }
-
-  const handleRemoteOffer = () => {
-    const remoteOffer = new RTCSessionDescription(JSON.parse(remoteOfferInputValue));
-    peerConnection.setRemoteDescription(remoteOffer).then(() => {
-      return peerConnection.createAnswer();
-    }).then(answer => {
-      return peerConnection.setLocalDescription(answer);
-    }).then(() => {
-      console.log("Answer:", JSON.stringify(peerConnection.localDescription));
-    });
-  }
-
-  const handleRemoteAnswer = () => {
-    const remoteAnswer = new RTCSessionDescription(JSON.parse(remoteAnswerInputValue));
-    peerConnection.setRemoteDescription(remoteAnswer);
-  }
-
+  // const handleRemoteAnswerInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setRemoteAnswerInputValue(event.target.value);
+  // }
+  // #endregion
 
   return (
-    <>
-      <div>
+    <div className="flex-col space-y-4">
+      <div className="flex space-x-4">
         <div>
           {chatLog.map((msg, index) => <p key={index}>{msg}</p>)}
         </div>
         <input value={message} onChange={(e) => setMessage(e.target.value)} />
-        <div>
-        <button onClick={sendMessage}>Send</button>
-        <button onClick={createOffer}>Generate Offer</button>
-        </div>
+        <button className="text-blue-400" onClick={() => sendMessage(message)}>Send</button>
       </div>
       <div>
-        <label>Remote Offer</label>
-        <input
+        <button className="text-orange-400" onClick={createSdpOffer}>Generate Offer</button>
+      </div>
+      <div>
+        {/* <label>Remote Offer</label> */}
+        {/* <input
           type="text"
           value={remoteOfferInputValue}
           onChange={handleRemoteInputChange}
-        />
-      <button onClick={handleRemoteOffer}>Handle remote offer</button>
+        /> */}
+        <button className="text-green-500" onClick={async () => {
+          // handleRemoteAnswer(remoteAnswerInputValue)
+          const clipboardValue = await navigator.clipboard.readText()
+          handleRemoteOffer(clipboardValue)
+        }}>Handle remote offer from clipboard</button>
       </div>
       <div>
-        <label>Remote answer</label>
-        <input
+        {/* <label>Remote answer</label> */}
+        {/* <input
           type="text"
           value={remoteAnswerInputValue}
           onChange={handleRemoteAnswerInputChange}
-        />
-      <button onClick={handleRemoteAnswer}>Handle remote answer</button>
+        /> */}
+        <button className="text-green-500" onClick={async () => {
+          // handleRemoteAnswer(remoteAnswerInputValue)
+          const clipboardValue = await navigator.clipboard.readText()
+          handleRemoteAnswer(clipboardValue)
+        }}>Handle remote answer from clipboard</button>
       </div>
       <div>
-        <label>Ice Candidate</label>
-        <input
+        {/* <label>Ice Candidate</label> */}
+        {/* <input
           type="text"
-          value={iceOfferInputValue}
+          value={iceCandidateInputValue}
           onChange={handleIceInputChange}
-        />
-      <button onClick={addIceCandidate}>Add Ice Candidate</button>
+        /> */}
+        <button className="text-green-500" onClick={async () => {
+          // handleRemoteAnswer(remoteAnswerInputValue)
+          const clipboardValue = await navigator.clipboard.readText()
+          addIceCandidate(clipboardValue)
+        }}>Add Ice Candidate from clipboard</button>
       </div>
-    </>
+      <div>
+        <h2>{sdpOffer ? 'Offer available to use- copy and go to other tab' : 'Click generate offer'}</h2>
+        <button disabled={!sdpOffer} className="text-green-500" onClick={() => navigator.clipboard.writeText(sdpOffer)}>Copy offer</button>
+      </div>
+      <div>
+        <h2>{sdpAnswer ? 'Answer available to use- copy and go back to first tab' : 'Click handle offer after copying from other tab'}</h2>
+        <button className="text-green-500" onClick={() => navigator.clipboard.writeText(sdpAnswer)}>Copy answer</button>
+      </div>
+      <div>
+        <h2>{iceCandidates.length > 0 ? "Ice Candidate available- copy and go to other tab" : "No ice candidates yet"}</h2>
+        <button disabled={iceCandidates.length === 0} className="text-green-500" onClick={() => navigator.clipboard.writeText(iceCandidates[0])}>Copy first ice candidate</button>
+      </div>
+    </div>
   );
 };
 
