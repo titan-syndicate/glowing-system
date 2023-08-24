@@ -1,8 +1,19 @@
 'use client'
 import { useState } from 'react';
 import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import Divider from '@mui/material/Divider';
 
 import useWebRTC from './useWebRTC';
+
+const chatListStyle = {
+  width: '100%',
+  maxWidth: 360,
+  bgcolor: 'background.paper',
+};
 
 const WebRTCChat: React.FC = () => {
   const {
@@ -17,87 +28,54 @@ const WebRTCChat: React.FC = () => {
     sdpOffer,
     sendMessage,
   } = useWebRTC();
-  // const [peerConnection] = useState(new RTCPeerConnection());
-  // const [dataChannel] = useState(peerConnection.createDataChannel('chat'));
   const [message, setMessage] = useState<string>('');
-  // const [chatLog, setChatLog] = useState<string[]>([]);
-
-  // #region Input handlers
-  // const [remoteOfferInputValue, setRemoteOfferInputValue] = useState('');  // Initial value is an empty string
-  // const [iceCandidateInputValue, setIceCandidateInputValue] = useState('');  // Initial value is an empty string
-  // const [remoteAnswerInputValue, setRemoteAnswerInputValue] = useState('');  // Initial value is an empty string
-
-  // const handleRemoteInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setRemoteOfferInputValue(event?.target?.value);
-  // }
-
-  // const handleIceInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setIceCandidateInputValue(event.target.value);
-  // }
-
-  // const handleRemoteAnswerInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setRemoteAnswerInputValue(event.target.value);
-  // }
-  // #endregion
 
   return (
     <div className="flex-col space-y-4">
       <div className="flex space-x-4">
         <div>
-          {chatLog.map((msg, index) => <p key={index}>{msg}</p>)}
+          <List sx={chatListStyle}>
+            {chatLog.map((msg, index) => (
+              <>
+                <ListItem key={index} >
+                  <ListItemText primary={msg} />
+                </ListItem>
+                <Divider />
+              </>
+            ))}
+          </List>
         </div>
-        <input value={message} onChange={(e) => setMessage(e.target.value)} />
-        <button className="text-blue-400" onClick={() => sendMessage(message)}>Send</button>
+        <TextField value={message} onChange={(e) => setMessage(e.target.value)} />
+        <Button variant="contained" onClick={() => sendMessage(message)}>Send</Button>
       </div>
       <div>
-        <button className="text-orange-400" onClick={createSdpOffer}>Generate Offer</button>
+        <Button variant="outlined" onClick={createSdpOffer}>Generate Offer</Button>
       </div>
       <div>
-        {/* <label>Remote Offer</label> */}
-        {/* <input
-          type="text"
-          value={remoteOfferInputValue}
-          onChange={handleRemoteInputChange}
-        /> */}
-        <button className="text-green-500" onClick={async () => {
-          // handleRemoteAnswer(remoteAnswerInputValue)
+        <Button variant="outlined" onClick={async () => {
           const clipboardValue = await navigator.clipboard.readText()
           handleRemoteOffer(clipboardValue)
-        }}>Handle remote offer from clipboard</button>
+        }}>Handle remote offer from clipboard</Button>
       </div>
       <div>
-        {/* <label>Remote answer</label> */}
-        {/* <input
-          type="text"
-          value={remoteAnswerInputValue}
-          onChange={handleRemoteAnswerInputChange}
-        /> */}
-        <button className="text-green-500" onClick={async () => {
-          // handleRemoteAnswer(remoteAnswerInputValue)
+        <Button variant="outlined" onClick={async () => {
           const clipboardValue = await navigator.clipboard.readText()
           handleRemoteAnswer(clipboardValue)
-        }}>Handle remote answer from clipboard</button>
+        }}>Handle remote answer from clipboard</Button>
       </div>
       <div>
-        {/* <label>Ice Candidate</label> */}
-        {/* <input
-          type="text"
-          value={iceCandidateInputValue}
-          onChange={handleIceInputChange}
-        /> */}
-        <button className="text-green-500" onClick={async () => {
-          // handleRemoteAnswer(remoteAnswerInputValue)
+        <Button variant="outlined" onClick={async () => {
           const clipboardValue = await navigator.clipboard.readText()
           addIceCandidate(clipboardValue)
-        }}>Add Ice Candidate from clipboard</button>
+        }}>Add Ice Candidate from clipboard</Button>
       </div>
       <div>
         <h2>{sdpOffer ? 'Offer available to use- copy and go to other tab' : 'Click generate offer'}</h2>
-        <button disabled={!sdpOffer} className="text-green-500" onClick={() => navigator.clipboard.writeText(sdpOffer)}>Copy offer</button>
+        <Button variant="outlined" disabled={!sdpOffer} onClick={() => navigator.clipboard.writeText(sdpOffer)}>Copy offer</Button>
       </div>
       <div>
         <h2>{sdpAnswer ? 'Answer available to use- copy and go back to first tab' : 'Click handle offer after copying from other tab'}</h2>
-        <button className="text-green-500" onClick={() => navigator.clipboard.writeText(sdpAnswer)}>Copy answer</button>
+        <Button variant="outlined" onClick={() => navigator.clipboard.writeText(sdpAnswer)}>Copy answer</Button>
       </div>
       <div>
         <h2>{iceCandidates.length > 0 ? "Ice Candidate available- copy and go to other tab" : "No ice candidates yet"}</h2>
