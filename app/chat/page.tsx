@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react';
+import Button from '@mui/material/Button';
 
 import useWebRTC from './useWebRTC';
 
@@ -100,7 +101,7 @@ const WebRTCChat: React.FC = () => {
       </div>
       <div>
         <h2>{iceCandidates.length > 0 ? "Ice Candidate available- copy and go to other tab" : "No ice candidates yet"}</h2>
-        <button disabled={iceCandidates.length === 0} className="text-green-500" onClick={() => navigator.clipboard.writeText(iceCandidates[0])}>Copy first ice candidate</button>
+        <Button variant="outlined" disabled={iceCandidates.length === 0} onClick={() => navigator.clipboard.writeText(iceCandidates[0])}>Copy first ice candidate</Button>
       </div>
     </div>
   );
