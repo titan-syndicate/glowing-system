@@ -1,4 +1,5 @@
 "use client";
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
@@ -159,4 +160,5 @@ const WebRTCChat: React.FC = () => {
   );
 };
 
-export default WebRTCChat;
+// Export dynamic() to avoid SSR (because RTCPeerConnection and friends don't exist server-side)
+export default dynamic(() => Promise.resolve(WebRTCChat), { ssr: false });
