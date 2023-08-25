@@ -13,7 +13,16 @@ import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
 
 import useWebRTC from "./useWebRTC";
-import { Container, SxProps } from "@mui/material";
+import {
+  Accordion,
+  AccordionActions,
+  AccordionDetails,
+  AccordionSummary,
+  Container,
+  SxProps,
+} from "@mui/material";
+import { Instructions } from "./instructions";
+import { ExpandMore } from "@mui/icons-material";
 
 const chatListStyle: SxProps = {
   width: "100%",
@@ -168,6 +177,15 @@ const WebRTCChat: React.FC = () => {
           </div>
         </CardContent>
       </Card>
+
+      <Accordion>
+        <AccordionSummary expandIcon={<ExpandMore />}>
+          Instructions
+        </AccordionSummary>
+        <AccordionDetails>
+          <Instructions />
+        </AccordionDetails>
+      </Accordion>
     </Container>
   );
 };
