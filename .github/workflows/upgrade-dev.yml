@@ -8,9 +8,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: mirzakhany/helm-install-action@v1
-        with:
-          k8s_config: ${{ secrets.KUBECONFIG }}
+    - uses: mirzakhany/helm-install-action@v1
+      with:
+         k8s_config: ${{ secrets.KUBECONFIG }}
 
     - name: Add Helm Repository
       run: |
