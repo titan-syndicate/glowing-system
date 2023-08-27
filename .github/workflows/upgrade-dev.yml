@@ -15,7 +15,7 @@ jobs:
     
     - name: Set up kubeconfig
       run: |
-        echo "$KUBECONFIG_BASE64" | base64 -d > kubeconfig.yaml
+        echo $KUBECONFIG > kubeconfig.yaml
 
     - name: Install or Upgrade Helm Chart
       run: |
@@ -26,4 +26,4 @@ jobs:
         fi
 
     env:
-      KUBECONFIG_BASE64: ${{ secrets.KUBECONFIG }}
+      KUBECONFIG: ${{ secrets.KUBECONFIG }}
