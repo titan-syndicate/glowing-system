@@ -8,20 +8,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Install kubectl and Helm
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y kubectl
-        curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
-        chmod +x get_helm.sh
-        ./get_helm.sh
-
-    - name: Set up kubeconfig
-      run: |
-        echo "$KUBECONFIG_CONTENT" > kubeconfig.yaml
+      - uses: mirzakhany/helm-install-action@v1
+        with:
+          k8s_config: ${{ secrets.KUBECONFIG }}
 
     - name: Add Helm Repository
       run: |
@@ -31,10 +20,7 @@ jobs:
     - name: Install or Upgrade Helm Chart
       run: |
         if helm ls -n default | grep -q glowing-system; then
-          helm upgrade --kubeconfig kubeconfig.yaml glowing-system titan-syndicate/next-app-chart
+          helm upgrade glowing-system titan-syndicate/next-app-chart
         else
-          helm install --kubeconfig kubeconfig.yaml glowing-system titan-syndicate/next-app-chart
+          helm install glowing-system titan-syndicate/next-app-chart
         fi
-
-    env:
-      KUBECONFIG_CONTENT: ${{ secrets.KUBECONFIG }}
