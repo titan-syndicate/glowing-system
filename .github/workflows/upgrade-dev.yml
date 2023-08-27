@@ -8,14 +8,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Set up kubeconfig
+      run: |
+        echo "$KUBECONFIG_BASE64" | base64 -d > kubeconfig.yaml
+
     - name: Add Helm Repository
       run: |
         helm repo add titan-syndicate https://titan-syndicate.github.io/glowing-system-charts/
         helm repo update
-    
-    - name: Set up kubeconfig
-      run: |
-        echo $KUBECONFIG > kubeconfig.yaml
 
     - name: Install or Upgrade Helm Chart
       run: |
@@ -26,4 +26,4 @@ jobs:
         fi
 
     env:
-      KUBECONFIG: ${{ secrets.KUBECONFIG }}
+      KUBECONFIG_BASE64: ${{ secrets.KUBECONFIG }}
