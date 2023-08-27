@@ -1,0 +1,40 @@
+name: Deploy latest to dev with Helm
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install kubectl and Helm
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y kubectl
+        curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+        chmod +x get_helm.sh
+        ./get_helm.sh
+
+    - name: Set up kubeconfig
+      run: |
+        echo "$KUBECONFIG_CONTENT" > kubeconfig.yaml
+
+    - name: Add Helm Repository
+      run: |
+        helm repo add titan-syndicate https://titan-syndicate.github.io/glowing-system-charts/
+        helm repo update
+
+    - name: Install or Upgrade Helm Chart
+      run: |
+        if helm ls -n default | grep -q glowing-system; then
+          helm upgrade --kubeconfig kubeconfig.yaml glowing-system titan-syndicate/next-app-chart
+        else
+          helm install --kubeconfig kubeconfig.yaml glowing-system titan-syndicate/next-app-chart
+        fi
+
+    env:
+      KUBECONFIG_CONTENT: ${{ secrets.KUBECONFIG }}
