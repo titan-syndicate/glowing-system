@@ -12,11 +12,18 @@ jobs:
       run: |
         helm repo add titan-syndicate https://titan-syndicate.github.io/glowing-system-charts/
         helm repo update
+    
+    - name: Set up kubeconfig
+      run: |
+        echo "$KUBECONFIG_BASE64" | base64 -d > kubeconfig.yaml
 
     - name: Install or Upgrade Helm Chart
       run: |
         if helm ls -n default | grep -q glowing-system; then
-          helm upgrade glowing-system titan-syndicate/next-app-chart
+          helm upgrade --kubeconfig kubeconfig.yaml glowing-system titan-syndicate/next-app-chart
         else
-          helm install glowing-system titan-syndicate/next-app-chart
+          helm install --kubeconfig kubeconfig.yaml glowing-system titan-syndicate/next-app-chart
         fi
+
+    env:
+      KUBECONFIG_BASE64: ${{ secrets.KUBECONFIG }}
