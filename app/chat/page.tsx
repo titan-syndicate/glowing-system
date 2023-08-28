@@ -40,7 +40,7 @@ const containerStyle: SxProps = {
 
 const WebRTCChat: React.FC = () => {
   const {
-    addIceCandidate,
+    addIceCandidates,
     chatLog,
     createSdpOffer,
     handleRemoteAnswer,
@@ -166,24 +166,26 @@ const WebRTCChat: React.FC = () => {
             variant="outlined"
             onClick={async () => {
               const clipboardValue = await navigator.clipboard.readText();
-              addIceCandidate(clipboardValue);
+              addIceCandidates(clipboardValue);
             }}
           >
-            Add Ice Candidate from clipboard
+            Add Ice Candidates from clipboard
           </Button>
 
           <div>
             <Typography component="div">
               {iceCandidates.length > 0
-                ? "Ice Candidate available- copy and go to other tab"
+                ? "Ice Candidates available- copy and go to other tab"
                 : "No ice candidates yet"}
             </Typography>
             <Button
               variant="outlined"
               disabled={iceCandidates.length === 0}
-              onClick={() => navigator.clipboard.writeText(iceCandidates[0])}
+              onClick={() =>
+                navigator.clipboard.writeText(JSON.stringify(iceCandidates))
+              }
             >
-              Copy first ice candidate
+              Copy ice candidates
             </Button>
           </div>
         </CardContent>
@@ -199,6 +201,7 @@ const WebRTCChat: React.FC = () => {
               <li key={c}>{c}</li>
             ))}
           </ol>
+          <pre>{sdpOffer}</pre>
         </AccordionDetails>
       </Accordion>
     </Container>

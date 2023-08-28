@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 interface WebRTC {
-  addIceCandidate: (candidate: string) => void;
+  addIceCandidates: (candidate: string) => void;
   chatLog: string[];
   /**
    * Call this first and provide sdpOffer to the other peer.
@@ -125,14 +125,16 @@ export default function useWebRTC(): WebRTC {
     }
   };
 
-  const addIceCandidate = (iceCandidate: string) => {
-    const candidate = new RTCIceCandidate(JSON.parse(iceCandidate));
-    peerConnection.addIceCandidate(candidate);
+  const addIceCandidates = (iceCandidates: string) => {
+    JSON.parse(iceCandidates).forEach((c: string) => {
+      const candidate = new RTCIceCandidate(JSON.parse(c));
+      peerConnection.addIceCandidate(candidate);
+    });
   };
   // #endregion
 
   return {
-    addIceCandidate,
+    addIceCandidates,
     chatLog,
     createSdpOffer,
     dataChannelState,
