@@ -23,6 +23,7 @@ import {
 } from "@mui/material";
 import { Instructions } from "./instructions";
 import { ExpandMore } from "@mui/icons-material";
+import Grid from "@mui/material/Unstable_Grid2/Grid2";
 
 const chatListStyle: SxProps = {
   width: "100%",
@@ -96,56 +97,63 @@ const WebRTCChat: React.FC = () => {
           <Typography variant="h4" component="h1">
             SDP stuff
           </Typography>
-          <ButtonGroup orientation="vertical">
-            <Button variant="outlined" onClick={createSdpOffer}>
-              Generate Offer
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={async () => {
-                const clipboardValue = await navigator.clipboard.readText();
-                handleRemoteOffer(clipboardValue);
-              }}
-            >
-              Handle remote offer from clipboard
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={async () => {
-                const clipboardValue = await navigator.clipboard.readText();
-                handleRemoteAnswer(clipboardValue);
-              }}
-            >
-              Handle remote answer from clipboard
-            </Button>
-            <div>
-              <Typography component="div">
-                {sdpOffer
-                  ? "Offer available to use- copy and go to other tab"
-                  : "Click generate offer"}
-              </Typography>
-              <Button
-                variant="outlined"
-                disabled={!sdpOffer}
-                onClick={() => navigator.clipboard.writeText(sdpOffer)}
-              >
-                Copy offer
-              </Button>
-            </div>
-            <div>
-              <Typography component="div">
-                {sdpAnswer
-                  ? "Answer available to use- copy and go back to first tab"
-                  : "Click handle offer after copying from other tab"}
-              </Typography>
-              <Button
-                variant="outlined"
-                onClick={() => navigator.clipboard.writeText(sdpAnswer)}
-              >
-                Copy answer
-              </Button>
-            </div>
-          </ButtonGroup>
+          <Grid container spacing={2}>
+            <Grid md={6}>
+              <ButtonGroup orientation="vertical">
+                <Button variant="outlined" onClick={createSdpOffer}>
+                  Generate Offer
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={async () => {
+                    const clipboardValue = await navigator.clipboard.readText();
+                    handleRemoteOffer(clipboardValue);
+                  }}
+                >
+                  Handle remote offer from clipboard
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={async () => {
+                    const clipboardValue = await navigator.clipboard.readText();
+                    handleRemoteAnswer(clipboardValue);
+                  }}
+                >
+                  Handle remote answer from clipboard
+                </Button>
+                <div>
+                  <Typography component="div">
+                    {sdpOffer
+                      ? "Offer available to use- copy and go to other tab"
+                      : "Click generate offer"}
+                  </Typography>
+                  <Button
+                    variant="outlined"
+                    disabled={!sdpOffer}
+                    onClick={() => navigator.clipboard.writeText(sdpOffer)}
+                  >
+                    Copy offer
+                  </Button>
+                </div>
+                <div>
+                  <Typography component="div">
+                    {sdpAnswer
+                      ? "Answer available to use- copy and go back to first tab"
+                      : "Click handle offer after copying from other tab"}
+                  </Typography>
+                  <Button
+                    variant="outlined"
+                    onClick={() => navigator.clipboard.writeText(sdpAnswer)}
+                  >
+                    Copy answer
+                  </Button>
+                </div>
+              </ButtonGroup>
+            </Grid>
+            <Grid md={6}>
+              <Instructions />
+            </Grid>
+          </Grid>
         </CardContent>
       </Card>
 
@@ -180,15 +188,6 @@ const WebRTCChat: React.FC = () => {
           </div>
         </CardContent>
       </Card>
-
-      <Accordion>
-        <AccordionSummary expandIcon={<ExpandMore />}>
-          Instructions
-        </AccordionSummary>
-        <AccordionDetails>
-          <Instructions />
-        </AccordionDetails>
-      </Accordion>
 
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMore />}>
