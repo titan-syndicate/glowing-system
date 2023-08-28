@@ -189,6 +189,19 @@ const WebRTCChat: React.FC = () => {
           <Instructions />
         </AccordionDetails>
       </Accordion>
+
+      <Accordion>
+        <AccordionSummary expandIcon={<ExpandMore />}>
+          ICE candidates
+        </AccordionSummary>
+        <AccordionDetails>
+          <ol>
+            {iceCandidates.map((c) => (
+              <li key={c}>{c}</li>
+            ))}
+          </ol>
+        </AccordionDetails>
+      </Accordion>
     </Container>
   );
 };
