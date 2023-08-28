@@ -1,0 +1,29 @@
+name: Deploy latest to dev with Helm
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Set up kubeconfig
+      run: |
+        echo "$KUBECONFIG_BASE64" | base64 -d > kubeconfig.yaml
+
+    - name: Add Helm Repository
+      run: |
+        helm repo add titan-syndicate https://titan-syndicate.github.io/glowing-system-charts/
+        helm repo update
+
+    - name: Install or Upgrade Helm Chart
+      run: |
+        if helm ls -n default | grep -q glowing-system; then
+          helm upgrade --kubeconfig kubeconfig.yaml glowing-system titan-syndicate/next-app-chart
+        else
+          helm install --kubeconfig kubeconfig.yaml glowing-system titan-syndicate/next-app-chart
+        fi
+
+    env:
+      KUBECONFIG_BASE64: ${{ secrets.KUBECONFIG }}
