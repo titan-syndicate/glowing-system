@@ -10,7 +10,7 @@ jobs:
     steps:
     - name: Set up kubeconfig
       run: |
-        echo "$KUBECONFIG_BASE64" | base64 -d > kubeconfig.yaml
+        echo "$KUBECONFIG_64" | base64 -d > kubeconfig.yaml
 
     - name: Add Helm Repository
       run: |
