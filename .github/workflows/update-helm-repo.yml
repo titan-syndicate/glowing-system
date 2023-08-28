@@ -1,0 +1,54 @@
+name: Package and Update Helm Chart
+
+on:
+  workflow_dispatch:
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source repo
+      uses: actions/checkout@v2
+
+    - name: Set up Helm
+      uses: azure/setup-helm@v1
+      with:
+        version: 'latest'
+
+    - name: Lint and Package Helm Chart
+      run: |
+        helm lint charts/next-app-chart
+        helm package charts/next-app-chart -d ./
+
+    - name: Clone target repo
+      uses: actions/checkout@v2
+      with:
+        repository: titan-syndicate/glowing-system-charts
+        path: glowing-system-charts
+        ref: gh-pages
+
+    - name: Copy package to target repo
+      run: |
+        cp *.tgz glowing-system-charts/
+
+    - name: Update Helm Repo
+      run: |
+        cd glowing-system-charts
+        helm repo index . --url https://titan-syndicate.github.io/glowing-system-charts/
+        
+        # Check if the version already exists
+        NEW_VERSION=$(helm show chart ../charts/next-app-chart | grep version | cut -d: -f2 | tr -d ' ')
+        if grep -q "version: $NEW_VERSION" index.yaml; then
+          echo "Error: Chart version $NEW_VERSION already exists. Increment the version before pushing!"
+          exit 1
+        fi
+
+    - name: Commit and Push changes
+      run: |
+        cd glowing-system-charts
+        git config user.name "GitHub Action"
+        git config user.email "action@github.com"
+        git add .
+        git commit -m "Update Helm Chart"
+        git push
