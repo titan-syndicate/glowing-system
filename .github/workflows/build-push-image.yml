@@ -1,4 +1,4 @@
-name: Build & Push Image
+name: Docker Build and Push
 
 on:
   push:
@@ -19,8 +19,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          ref: main # Use the main branch for manual dispatch
 
       - name: Set up Docker Buildx
+        id: buildx
         uses: docker/setup-buildx-action@v1
 
       - name: Log in to Docker Hub
@@ -29,7 +32,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker image
+      - name: Build and push Docker image for ARM and AMD
         env:
           DOCKER_BUILDKIT: 1
         run: |
@@ -43,7 +46,7 @@ jobs:
             fi
           fi
           docker buildx build --platform linux/arm64,linux/amd64 -t rianfowler/next-app:$version .
-      
+
       - name: Tag Docker image with latest-dev
         run: docker tag rianfowler/next-app:$version rianfowler/next-app:latest-dev
 
