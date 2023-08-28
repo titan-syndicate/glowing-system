@@ -11,6 +11,7 @@ jobs:
     - name: Set up kubeconfig
       run: |
         echo "$KUBECONFIG_64" | base64 -d > kubeconfig.yaml
+        cat kubeconfig.yaml
 
     - name: Add Helm Repository
       run: |
