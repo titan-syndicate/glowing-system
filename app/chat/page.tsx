@@ -56,6 +56,9 @@ const WebRTCChat: React.FC = () => {
     <Container sx={containerStyle}>
       <Card variant="outlined">
         <CardContent>
+          <Typography variant="h4" component="h1">
+            Chat
+          </Typography>
           <div>
             <List sx={chatListStyle}>
               {chatLog.map((msg, index) => (
@@ -90,7 +93,7 @@ const WebRTCChat: React.FC = () => {
 
       <Card variant="outlined">
         <CardContent>
-          <Typography variant="h3" component="div">
+          <Typography variant="h4" component="h1">
             SDP stuff
           </Typography>
           <ButtonGroup orientation="vertical">
@@ -148,7 +151,7 @@ const WebRTCChat: React.FC = () => {
 
       <Card variant="outlined">
         <CardContent>
-          <Typography variant="h3" component="div">
+          <Typography variant="h4" component="h1">
             Ice stuff
           </Typography>
           <Button
