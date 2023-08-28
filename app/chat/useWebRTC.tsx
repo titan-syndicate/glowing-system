@@ -20,7 +20,22 @@ interface WebRTC {
 }
 
 export default function useWebRTC(): WebRTC {
-  const [peerConnection] = useState(new RTCPeerConnection());
+  const [peerConnection] = useState(
+    new RTCPeerConnection({
+      iceServers: [
+        {
+          // More available at https://gist.github.com/zziuni/3741933
+          urls: [
+            "stun:stun.l.google.com:19302",
+            "stun:stun1.l.google.com:19302",
+            "stun:stun2.l.google.com:19302",
+            "stun:stun3.l.google.com:19302",
+            "stun:stun4.l.google.com:19302",
+          ],
+        },
+      ],
+    })
+  );
   const [dataChannel] = useState(peerConnection.createDataChannel("chat"));
   const [dataChannelState, setDataChannelState] = useState<string>(
     dataChannel.readyState
@@ -85,11 +100,28 @@ export default function useWebRTC(): WebRTC {
 
   // #region Ice Candidates
   peerConnection.onicecandidate = (event) => {
-    if (event.candidate) {
+    if (event.candidate !== null) {
+      // TODO: Send candidate to remote peer via WebSockets
       setIceCandidates((prevCandidates) => [
         ...prevCandidates,
         JSON.stringify(event.candidate),
       ]);
+      if (event.candidate?.candidate === "") {
+        // Finished generating candidates
+        // Not sure if there's anything we actually need to do here
+      }
+    }
+  };
+
+  peerConnection.onicegatheringstatechange = () => {
+    switch (peerConnection.iceGatheringState) {
+      case "new":
+        break;
+      case "gathering":
+        break;
+      case "complete": {
+        // We've got all the ICE candidates; now we can update the UI and copy them all
+      }
     }
   };
 
