@@ -10,7 +10,8 @@ jobs:
     steps:
     - name: Set up kubeconfig
       run: |
-        echo "$KUBECONFIG_BASE64" | base64 -d > kubeconfig.yaml
+        echo "${{ secrets.KUBECONFIG_64 }}" | head -c 30
+        echo "$KUBECONFIG_64" | base64 -d > kubeconfig.yaml
 
     - name: Add Helm Repository
       run: |
@@ -19,11 +20,11 @@ jobs:
 
     - name: Install or Upgrade Helm Chart
       run: |
-        if helm ls -n default | grep -q glowing-system; then
+        if helm ls --kubeconfig kubeconfig.yaml -n default | grep -q glowing-system; then
           helm upgrade --kubeconfig kubeconfig.yaml glowing-system titan-syndicate/next-app-chart
         else
           helm install --kubeconfig kubeconfig.yaml glowing-system titan-syndicate/next-app-chart
         fi
 
     env:
-      KUBECONFIG_BASE64: ${{ secrets.KUBECONFIG }}
+      KUBECONFIG_64: ${{ secrets.KUBECONFIG_64 }}
