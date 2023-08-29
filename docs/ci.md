@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Home
+title: Continuous Integration
 ---
 
-# CI stuff
+# CI stufft
