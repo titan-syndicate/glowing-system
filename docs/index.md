@@ -5,4 +5,4 @@ title: Home
 
 # Home page
 
-[CI stuff](/ci)
+[CI stuff](/glowing-system/ci)
