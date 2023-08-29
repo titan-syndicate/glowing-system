@@ -9,7 +9,7 @@ services:
     volumes:
     - type: bind
       source: /var/run/docker.sock
-      target: /var/run/docker.sockservices:
+      target: /var/run/docker.sock
 
   db:
     image: postgres

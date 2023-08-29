@@ -15,11 +15,9 @@ RUN apt-get install -y python3-pip && \
   pip3 install gorilla-cli
 
 # Install Helm and kubectl
-# RUN curl https://baltocdn.com/helm/signing.asc | apt-key add - && \
-#     apt-get install -y apt-transport-https && \
-#     echo "deb https://baltocdn.com/helm/stable/debian/ all main" | tee /etc/apt/sources.list.d/helm-stable-debian.list && \
-#     apt-get update && \
-#     apt-get install -y helm kubectl
+RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
+    && chmod +x kubectl \
+    && sudo mv kubectl /usr/local/bin/
 RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 # Install Node 18
@@ -41,6 +39,7 @@ RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/sh
 
 # Install act
 RUN curl -s https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash
+RUN sudo mv ./bin/act /usr/local/bin/act
 
 # Install psql client
 RUN apt-get install -y postgresql-client
