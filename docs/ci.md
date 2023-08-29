@@ -33,7 +33,7 @@ This workflow carries out the following:
 
 ## Workflow Sequence
 
-```mermaid
+{% mermaid %}
 graph TD
     A[Start] --> B[build-tag-push-dev-image]
     B --> C[Image with @latest-dev tag pushed to Docker Hub]
@@ -43,4 +43,4 @@ graph TD
     D -- No --> F[helm-upgrade-dev]
     E --> F
     F --> G[End]
-```
+{% endmermaid %}
