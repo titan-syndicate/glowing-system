@@ -31,23 +31,3 @@ const runScript = async () => {
 };
 
 runScript();
-
-// const scriptNames = Object.keys(packageJson.scripts).filter(script => script !== "interactive"); // Exclude the interactive script itself
-
-// inquirer.prompt([
-//   {
-//     type: 'list',
-//     name: 'npmScript',
-//     message: 'Which npm script would you like to run?',
-//     choices: scriptNames
-//   }
-// ]).then(answers => {
-//   exec(`npm run ${answers.npmScript}`, (error, stdout, stderr) => {
-//     if (error) {
-//       console.error(`Error executing script: ${error.message}`);
-//       return;
-//     }
-//     console.log(stdout);
-//     console.error(stderr);
-//   });
-// });
