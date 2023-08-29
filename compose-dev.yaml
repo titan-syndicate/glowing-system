@@ -5,6 +5,7 @@ services:
     - sleep
     - infinity
     image: rianfowler/glowing-system-dev-env:latest
+    pull_policy: always
     init: true
     volumes:
     - type: bind
