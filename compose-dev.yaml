@@ -10,3 +10,14 @@ services:
     - type: bind
       source: /var/run/docker.sock
       target: /var/run/docker.sock
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: example
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
