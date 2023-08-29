@@ -14,7 +14,9 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_PASSWORD: example
+      POSTGRES_PASSWORD: fistbumppw
+      POSTGRES_USER: fistbumpdev
+      POSTGRES_DB: fistbumpdb
 
   adminer:
     image: adminer
