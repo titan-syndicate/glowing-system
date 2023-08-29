@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout source repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Set up Helm
       uses: azure/setup-helm@v3
@@ -24,7 +24,7 @@ jobs:
         helm package charts/next-app-chart -d ./
 
     - name: Clone target repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: titan-syndicate/glowing-system-charts
         path: glowing-system-charts
