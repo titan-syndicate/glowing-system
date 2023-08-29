@@ -6,6 +6,8 @@ import { useEffect } from "react";
 
 PusherJS.logToConsole = true;
 
+const CHAT_MESSAGE_EVENT = "client-new-chat-message";
+
 const SoketiTest = () => {
   useEffect(() => {
     // 1. Connect to PusherJS channel
@@ -14,22 +16,26 @@ const SoketiTest = () => {
       wsHost: "127.0.0.1",
       wsPort: 6001,
       forceTLS: false,
-      disableStats: true,
+      enableStats: false,
       enabledTransports: ["ws", "wss"],
     });
 
     // 3. Recieve messages when other clients have connected
-    client.subscribe("chat-room").bind("message", (message: any) => {
+    const channel = client.subscribe("chat-room");
+
+    channel.bind(CHAT_MESSAGE_EVENT, (message: any) => {
       console.log(`${message.sender} says: ${message.content}`);
     });
 
     // 2. Send a message saying we've connected
-    console.log("sending message");
-    client.send_event(
-      "chat-message",
-      { sender: "asdf", content: "asdffdsa" }
-      // "chat-room"
-    );
+    channel.bind("pusher:subscription_succeeded", () => {
+      console.log("sending message");
+      channel.trigger(
+        CHAT_MESSAGE_EVENT,
+        { sender: "asdf", content: "asdffdsa" }
+        // "chat-room"
+      );
+    });
   });
 
   return <Container>Testing</Container>;
