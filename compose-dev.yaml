@@ -4,7 +4,7 @@ services:
     entrypoint:
     - sleep
     - infinity
-    image: rianfowler/glowing-system-dev-env:latest
+    image: docker/dev-environments-javascript:stable-1
     init: true
     volumes:
     - type: bind
