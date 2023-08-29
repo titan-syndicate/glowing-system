@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: next-app
-        image: rianfowler/next-app:latest
+        image: rianfowler/next-app:latest-dev
         ports:
         - containerPort: 3000

@@ -1,7 +1,9 @@
 name: Package and Update Helm Chart
 
 on:
-  workflow_dispatch:
+  push:
+    paths:
+      - 'charts/next-app-chart/**'
 
 jobs:
   package:
@@ -28,21 +30,20 @@ jobs:
         path: glowing-system-charts
         ref: gh-pages
 
-    - name: Copy package to target repo
-      run: |
-        cp *.tgz glowing-system-charts/
-
-    - name: Update Helm Repo
+    - name: Check for existing version in target repo
       run: |
         cd glowing-system-charts
-        helm repo index . --url https://titan-syndicate.github.io/glowing-system-charts/
-        
-        # Check if the version already exists
         NEW_VERSION=$(helm show chart ../charts/next-app-chart | grep version | cut -d: -f2 | tr -d ' ')
         if grep -q "version: $NEW_VERSION" index.yaml; then
           echo "Error: Chart version $NEW_VERSION already exists. Increment the version before pushing!"
           exit 1
         fi
+
+    - name: Copy package to target repo and Update Helm Repo
+      run: |
+        cp *.tgz glowing-system-charts/
+        cd glowing-system-charts
+        helm repo index . --url https://titan-syndicate.github.io/glowing-system-charts/
 
     - name: Commit and Push changes
       run: |
