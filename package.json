@@ -5,9 +5,14 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "l": "npm run list-scripts",
+    "lint": "next lint",
+    "list-scripts": "node scripts/interactive-npm-scripts.js",
     "start": "next start",
-    "lint": "next lint"
+    "sync-secrets": "./scripts/sync-secrets.sh",
+    "wf-update-dev-env-image": "act --secret-file .env.secrets -j build-tag-push-dev-env-image"
   },
+  "type": "module",
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
@@ -27,5 +32,10 @@
     "socket.io-client": "^4.7.2",
     "tailwindcss": "^3.3.3",
     "typescript": "5.1.6"
+  },
+  "devDependencies": {
+    "inquirer": "^9.2.10",
+    "inquirer-autocomplete-prompt": "^3.0.0",
+    "prisma": "^5.2.0"
   }
 }
