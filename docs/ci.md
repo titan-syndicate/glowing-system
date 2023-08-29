@@ -36,7 +36,7 @@ This workflow carries out the following:
 ```mermaid
 graph TD
     A[Start] --> B[build-tag-push-dev-image]
-    B --> C[Image with @latest-dev tag pushed to Docker Hub]
+    B --> C[Push image tagged with @latest-dev tag to Docker Hub]
     D[Infrastructure Change?]
     C --> D
     D -- Yes --> E[update-helm-repo]
