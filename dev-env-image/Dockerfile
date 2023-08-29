@@ -8,7 +8,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get upgrade -y
 
 # Install essential tools
-RUN apt-get install -y curl software-properties-common lsb-release sudo gnupg2
+RUN apt-get install -y curl software-properties-common lsb-release sudo gnupg2 xdg-utils
 
 # Install pip for gorilla-cli
 RUN apt-get install -y python3-pip && \
@@ -39,14 +39,30 @@ RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/sh
   apt-get update && \
   apt-get install -y vlt
 
+# Install act
+RUN curl -s https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash
+
 # Install psql client
 RUN apt-get install -y postgresql-client
 
 # Install Docker to support Docker-in-Docker
 RUN apt-get install -y docker.io
 
+# Install ZSH
+RUN apt-get update && apt-get install -y zsh
+
+# Install oh-my-zsh
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+
+# Set ZSH as the default shell
+RUN chsh -s $(which zsh)
+
+#############################################
+### DO NOT ADD ANYTHING BELOW THIS LINE #####
+#############################################
+
 # Clean up APT cache for reducing the image size
 RUN apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-ENTRYPOINT [ "/bin/bash" ]
+ENTRYPOINT [ "zsh" ]

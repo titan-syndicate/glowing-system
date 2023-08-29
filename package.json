@@ -5,8 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "lint": "next lint",
+    "list": "node scripts/interactive-npm-scripts.mjs",
     "start": "next start",
-    "lint": "next lint"
+    "sync-secrets": "./scripts/sync-secrets.sh",
+    "wf-update-dev-env-image": "act --secret-file .env.secrets -j build-tag-push-dev-env-image"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -29,6 +32,7 @@
     "typescript": "5.1.6"
   },
   "devDependencies": {
+    "inquirer": "^9.2.10",
     "prisma": "^5.2.0"
   }
 }
