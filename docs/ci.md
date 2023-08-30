@@ -45,57 +45,47 @@ graph TD
     F --> G[End]
 ```
 
-# Running GitHub Actions Locally with `act`
+# Running GitHub Actions Locally
 
-`act` allows you to run your GitHub Actions workflows locally. This is beneficial for testing your workflows before pushing to your repository. This guide will walk you through the process of setting up and using `act` locally.
+Running your GitHub Actions workflows locally ensures that they perform correctly before pushing them to your repository. This guide covers the process, from setup to execution.
 
 ## Prerequisites
 
-- **Docker Desktop**: Ensure you have Docker Desktop installed and running. It's a dependency for `act`.
-  - [Download Docker Desktop](https://www.docker.com/products/docker-desktop)
+- **Docker Dev Container**: Before getting started, make sure you're operating within the Docker Dev Container.
+  - [Launch Docker Dev Environment](https://open.docker.com/dashboard/dev-envs?url=https://github.com/titan-syndicate/glowing-system)
 
-- **Homebrew**: You'll need the Homebrew package manager to install some tools.
-  - [Install Homebrew](https://brew.sh/)
+- **npm**: If you're in a new dev container, remember to execute `npm install`.
 
-## Installation Steps
-
-1. **Install `act` with Homebrew**:
-```bash
-brew install act
-```
-
-2. **Install `vlt` (Vault)**:
-```bash
-brew tap hashicorp/tap
-brew install vlt
-```
+- **HashiCorp Vault**: Being configured with HashiCorp Vault Secrets is essential. Running GitHub Actions locally will require several secrets.
 
 ## Configuration
 
-1. **Log in to `vlt`**:
+1. **Sync Secrets**:
+Run the following npm script to generate a `.env.secrets` file:
 ```bash
-vlt login
+npm run sync-secrets
+```
+Ensure this file is populated with genuine values, not error messages from Vault.
+
+## Running Workflows
+
+1. **Access NPM Scripts**:
+Access an interactive list of npm scripts using:
+```bash
+npm run interactive
+```
+or the shorter:
+```bash
+npm run i
 ```
 
-2. **Generate a `.env` file with `vlt`**:
-At the root of your repository, there's a bash file `make-env.sh` that will utilize `vlt` to create a `.env` file. Run it:
-```bash
-./make-env.sh
-```
-This `.env` file contains secrets that `act` will use to simulate GitHub's secret storage mechanism.
+2. **Select a Workflow**:
+When searching for a GitHub Action workflow to run, they all start with `wf-`. Use the interactive menu, and input `wf-` to narrow down your choices.
 
-## Running Workflows with `act`
+## Tips and Tricks
 
-1. **List available workflows**:
-You can see a list of all the workflows in your repository with:
-```bash
-act -l
-```
+- All GitHub Action workflows are prefixed with `wf-`, making it easy to locate them in the interactive menu.
 
-2. **Run a specific workflow**:
-To run a particular workflow, use the `-j` flag followed by the workflow name. Ensure you reference the `.env` file for secrets:
-```bash
-act --secret-file .env -j helm-upgrade-dev
-```
+- Always verify the `.env.secrets` file for its content after running the `sync-secrets` npm script. This step ensures there's no error message from Vault Secrets, and the secrets are fetched correctly.
 
-By following the above steps, you can simulate GitHub Actions workflows on your local machine, ensuring they run correctly before committing them to your repository.
+By adhering to these steps, you can simulate GitHub Actions workflows locally, ensuring they're free of issues before pushing them to your repository.

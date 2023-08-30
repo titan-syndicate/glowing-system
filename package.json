@@ -5,12 +5,16 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "l": "npm run list-scripts",
+    "i": "npm run interactive",
+    "interactive": "npm run list-scripts",
     "lint": "next lint",
     "list-scripts": "node scripts/interactive-npm-scripts.js",
     "start": "next start",
     "sync-secrets": "./scripts/sync-secrets.sh",
-    "wf-update-dev-env-image": "act --secret-file .env.secrets -j build-tag-push-dev-env-image"
+    "wf-update-dev-env-image": "act --secret-file .env.secrets -j build-tag-push-dev-env-image",
+    "wf-helm-upgrade-dev": "act --secret-file .env.secrets -j helm-upgrdae-dev",
+    "wf-update-helm-repo": "act --secret-file .env.secrets -j update-helm-repo",
+    "wf-build-tag-push-dev-image": "act --secret-file .env.secrets -j build-tag-push-dev-image"
   },
   "type": "module",
   "dependencies": {

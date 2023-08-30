@@ -15,9 +15,10 @@ const runScript = async () => {
       source: (answersSoFar, input) => {
         input = input || '';
         return new Promise((resolve) => {
-          const matches = Object.keys(packageJson.scripts).filter((script) =>
-            script.includes(input)
-          );
+          const matches = Object.keys(packageJson.scripts)
+            .filter((script) =>
+              script.includes(input) && script !== "interactive" && script !== "i"
+            );
           resolve(matches);
         });
       },
@@ -27,7 +28,7 @@ const runScript = async () => {
   const cmd = `npm run ${script}`;
   console.log(`Running: ${cmd}`);
   // Execute the selected npm script
- execSync(cmd, { stdio: 'inherit' });
+  execSync(cmd, { stdio: 'inherit' });
 };
 
 runScript();
