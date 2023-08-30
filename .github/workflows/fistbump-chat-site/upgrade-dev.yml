@@ -1,4 +1,4 @@
-name: Helm upgrade def
+name: Run helm upgrade on dev.fistbump.dev
 
 on:
   workflow_dispatch:

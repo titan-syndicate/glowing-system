@@ -1,4 +1,4 @@
-name: Build and Tag Development Image
+name: Build, tag, push image used on dev.fistbump.chat
 
 on:
   workflow_dispatch:

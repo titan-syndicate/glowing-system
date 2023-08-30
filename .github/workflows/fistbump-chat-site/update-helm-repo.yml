@@ -1,4 +1,4 @@
-name: Package and Update Helm Repo
+name: Increment Helm chart version, package, and push to helm repo
 
 on:
   push:
