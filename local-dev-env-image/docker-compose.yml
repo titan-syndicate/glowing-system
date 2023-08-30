@@ -5,11 +5,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.base
-    image: base:latest
+    image: rianfowler/base:latest
 
   gorilla:
     build:
       context: .
       dockerfile: Dockerfile.gorilla
-    image: gorilla:latest
-
+    image: rianfowler/gorilla:latest
