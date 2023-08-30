@@ -19,49 +19,49 @@ jobs:
         version: 'latest'
 
     - name: Update Chart.yaml and push to main
-    id: chart-update
-    run: |
-      echo "Installing yq..."
-      wget https://github.com/mikefarah/yq/releases/download/v4.6.3/yq_linux_amd64 -O /usr/bin/yq && chmod +x /usr/bin/yq
+      id: chart-update
+      run: |
+        echo "Installing yq..."
+        wget https://github.com/mikefarah/yq/releases/download/v4.6.3/yq_linux_amd64 -O /usr/bin/yq && chmod +x /usr/bin/yq
 
-      echo "Extracting current versions..."
-      current_app_version=$(yq e '.appVersion' charts/next-app-chart/Chart.yaml)
-      current_chart_version=$(yq e '.version' charts/next-app-chart/Chart.yaml)
-      echo "Current app version: $current_app_version"
-      echo "Current chart version: $current_chart_version"
+        echo "Extracting current versions..."
+        current_app_version=$(yq e '.appVersion' charts/next-app-chart/Chart.yaml)
+        current_chart_version=$(yq e '.version' charts/next-app-chart/Chart.yaml)
+        echo "Current app version: $current_app_version"
+        echo "Current chart version: $current_chart_version"
 
-      echo "Updating app version..."
-      yq e -i '.appVersion = "${{ github.sha }}"' charts/next-app-chart/Chart.yaml
+        echo "Updating app version..."
+        yq e -i '.appVersion = "${{ github.sha }}"' charts/next-app-chart/Chart.yaml
 
-      echo "Determining new chart version..."
-      if [[ $current_chart_version == *"-alpha."* ]]; then
-        current_alpha_version=$(echo $current_chart_version | grep -o 'alpha.[0-9]*' | sed 's/alpha.//')
-        new_alpha_version=$((current_alpha_version+1))
-        new_chart_version=$(echo $current_chart_version | sed "s/alpha.$current_alpha_version/alpha.$new_alpha_version/")
-      else
-        # Extract major, minor, and patch versions
-        IFS='.' read -ra VERSION_PARTS <<< "$current_chart_version"
-        major="${VERSION_PARTS[0]}"
-        minor="${VERSION_PARTS[1]}"
-        patch="${VERSION_PARTS[2]}"
+        echo "Determining new chart version..."
+        if [[ $current_chart_version == *"-alpha."* ]]; then
+          current_alpha_version=$(echo $current_chart_version | grep -o 'alpha.[0-9]*' | sed 's/alpha.//')
+          new_alpha_version=$((current_alpha_version+1))
+          new_chart_version=$(echo $current_chart_version | sed "s/alpha.$current_alpha_version/alpha.$new_alpha_version/")
+        else
+          # Extract major, minor, and patch versions
+          IFS='.' read -ra VERSION_PARTS <<< "$current_chart_version"
+          major="${VERSION_PARTS[0]}"
+          minor="${VERSION_PARTS[1]}"
+          patch="${VERSION_PARTS[2]}"
 
-        # Increment the patch version
-        patch=$((patch+1))
+          # Increment the patch version
+          patch=$((patch+1))
 
-        new_chart_version="$major.$minor.$patch-alpha.1"
-      fi
-      echo "New chart version: $new_chart_version"
+          new_chart_version="$major.$minor.$patch-alpha.1"
+        fi
+        echo "New chart version: $new_chart_version"
 
-      echo "Updating Chart.yaml with new version..."
-      yq e -i ".version = \"$new_chart_version\"" charts/next-app-chart/Chart.yaml
+        echo "Updating Chart.yaml with new version..."
+        yq e -i ".version = \"$new_chart_version\"" charts/next-app-chart/Chart.yaml
 
-      echo "Configuring git..."
-      git config --global user.name "GitHub Action"
-      git config --global user.email "action@github.com"
+        echo "Configuring git..."
+        git config --global user.name "GitHub Action"
+        git config --global user.email "action@github.com"
 
-      echo "Committing and pushing changes..."
-      git add charts/next-app-chart/Chart.yaml
-      git commit -m "Update Chart version to $new_chart_version"
+        echo "Committing and pushing changes..."
+        git add charts/next-app-chart/Chart.yaml
+        git commit -m "Update Chart version to $new_chart_version"
 
     - name: Push changes
       uses: ad-m/github-push-action@master
