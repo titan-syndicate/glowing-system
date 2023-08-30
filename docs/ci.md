@@ -8,13 +8,13 @@ Certainly! Here's the updated documentation based on the changes:
 
 Our continuous integration process consists of three main GitHub workflows:
 
-1. **build-tag-push-dev-image**: Responsible for building the application, creating its image, and pushing it to Docker Hub.
-2. **update-helm-repo**: To be invoked only if the infrastructure undergoes any changes.
-3. **helm-upgrade-dev**: Pulls the latest Docker image using the Git commit hash as a tag and performs a Helm upgrade on our development Kubernetes cluster.
+1. **update-dev-fistbump-chat-image**: Responsible for building the application, creating its image, and pushing it to Docker Hub.
+2. **update-helm-repo**: Updates the helm package and creates a pre-release version when appropriate.
+3. **helm-upgrade-dev**: Pulls the latest Docker image using the latest prerelease version as a tag and performs a Helm upgrade on our development Kubernetes cluster.
 
 ## Workflow Details
 
-### 1. `build-tag-push-dev-image`
+### 1. `update-dev-fistbump-chat-image`
 This workflow is the first in the sequence and is essential for every deployment process. Here's what it does:
 
 - Builds the next version of our application.
@@ -39,7 +39,7 @@ This workflow carries out the following:
 
 ```mermaid
 graph TD
-    A[Start] --> B[build-tag-push-dev-image]
+    A[Start] --> B[update-dev-fistbump-chat-image]
     B --> C[Push image tagged with Git commit hash to Docker Hub]
     D[Infrastructure Change?]
     C --> D
