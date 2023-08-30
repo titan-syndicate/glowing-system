@@ -35,11 +35,6 @@ jobs:
           push: true
           tags: rianfowler/next-app:${{ github.sha }}
 
-      - name: Build and Push Docker image
-        run: |
-          docker buildx create --use
-          docker buildx build --platform linux/amd64,linux/arm64 -t rianfowler/next-app:${{ github.sha }} --push .
-
       - name: Update Chart.yaml and push to main
         id: chart-update
         run: |
