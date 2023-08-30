@@ -22,14 +22,11 @@ jobs:
 
         helm repo add titan-syndicate https://titan-syndicate.github.io/glowing-system-charts/
         helm repo update
+        helm plugin install https://github.com/titan-syndicate/helm-latest-prerelease
 
     - name: Install or Upgrade Helm Chart
       run: |
-        if helm ls --kubeconfig kubeconfig.yaml -n default | grep -q glowing-system; then
-          helm upgrade --kubeconfig kubeconfig.yaml glowing-system titan-syndicate/next-app-chart
-        else
-          helm install --kubeconfig kubeconfig.yaml glowing-system titan-syndicate/next-app-chart
-        fi
+        helm upgrade -i --kubeconfig kubeconfig.yaml glowing-system titan-syndicate/next-app-chart --version=$(helm latest-prerelease titan-syndicate/next-app-chart)
 
     env:
       KUBECONFIG_64: ${{ secrets.KUBECONFIG_64 }}
