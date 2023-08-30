@@ -2,6 +2,7 @@
 layout: default
 title: Continuous Integration
 ---
+Certainly! Here's the updated documentation based on the changes:
 
 # CI Workflows Documentation
 
@@ -9,7 +10,7 @@ Our continuous integration process consists of three main GitHub workflows:
 
 1. **build-tag-push-dev-image**: Responsible for building the application, creating its image, and pushing it to Docker Hub.
 2. **update-helm-repo**: To be invoked only if the infrastructure undergoes any changes.
-3. **helm-upgrade-dev**: Pulls the latest version of the `@latest-dev` tag of the image and performs a Helm upgrade on our development Kubernetes cluster.
+3. **helm-upgrade-dev**: Pulls the latest Docker image using the Git commit hash as a tag and performs a Helm upgrade on our development Kubernetes cluster.
 
 ## Workflow Details
 
@@ -18,25 +19,28 @@ This workflow is the first in the sequence and is essential for every deployment
 
 - Builds the next version of our application.
 - Creates a Docker image of this build.
-- Pushes the Docker image to Docker Hub with the tag `@latest-dev`.
+- Pushes the Docker image to Docker Hub with the tag corresponding to the Git commit hash. This ensures that each image version can be traced back to a specific commit, enhancing traceability and debugging.
 
 ### 2. `update-helm-repo`
-This workflow should only be invoked if there's a change in our infrastructure. If there are no modifications, this step can be skipped because the development environment always defaults to the `@latest-dev` tag. The key responsibilities include:
+This workflow has been enhanced to dynamically manage the versioning of the Helm chart. If there's a current pre-release alpha version in the chart (like `0.0.1-alpha.1`), it will increment the alpha number (to `0.0.1-alpha.2`). If the version is a standard release (like `0.0.1`), it will increment the patch version and append the alpha tag (resulting in `0.0.2-alpha.1`). This strategy ensures that our Helm chart versions are always in sync with the application's lifecycle.
+
+The key responsibilities of this workflow include:
 
 - Updating the Helm repository with any new changes.
+- Incrementing the Helm chart version based on the logic mentioned above.
 
 ### 3. `helm-upgrade-dev`
 This workflow carries out the following:
 
 - Calls the `helm upgrade` command on the development Kubernetes cluster.
-- Ensures that the cluster pulls down the latest version of the image tagged `@latest-dev`.
+- Ensures that the cluster pulls down the latest pre-release version.
 
 ## Workflow Sequence
 
 ```mermaid
 graph TD
     A[Start] --> B[build-tag-push-dev-image]
-    B --> C[Push image tagged with @latest-dev tag to Docker Hub]
+    B --> C[Push image tagged with Git commit hash to Docker Hub]
     D[Infrastructure Change?]
     C --> D
     D -- Yes --> E[update-helm-repo]
@@ -44,6 +48,8 @@ graph TD
     E --> F
     F --> G[End]
 ```
+
+This updated documentation provides a clear view of the changes introduced, making it easier for your team to understand and follow the updated CI workflows.
 
 # Running GitHub Actions Locally
 
