@@ -1,5 +1,5 @@
 services:
-  app:
+  app-OPEN-THIS-IN-VSCODE-FIRST:
     user: root
     entrypoint:
     - sleep

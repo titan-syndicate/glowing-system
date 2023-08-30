@@ -56,6 +56,10 @@ RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master
 # Set ZSH as the default shell
 RUN chsh -s $(which zsh)
 
+# Add exception for directory added by docker dev environment
+# This is unsafe and you should remove not use this image in other contexts without removing it
+RUN git config --global --add safe.directory /com.docker.devenvironments.code
+
 #############################################
 ### DO NOT ADD ANYTHING BELOW THIS LINE #####
 #############################################

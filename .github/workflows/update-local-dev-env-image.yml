@@ -1,10 +1,10 @@
-name: Build, tag, push dev environment image
+name: Build, tag, push local dev environment image
 
 on:
   workflow_dispatch:
 
 jobs:
-  build-tag-push-dev-env-image:
+  update-local-dev-image:
     runs-on: ubuntu-latest
 
     steps:
