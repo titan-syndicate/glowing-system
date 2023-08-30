@@ -17,7 +17,7 @@ const runScript = async () => {
         return new Promise((resolve) => {
           const matches = Object.keys(packageJson.scripts)
             .filter((script) =>
-              script.includes(input) && script !== "interactive" && script !== "i"
+              script.includes(input) && script !== "interactive" && script !== "i" && script !=="list-scripts"
             );
           resolve(matches);
         });
