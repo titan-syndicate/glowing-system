@@ -11,43 +11,45 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+      # - name: Set up Docker Buildx
+      #   uses: docker/setup-buildx-action@v2
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+      # - name: Log in to Docker Hub
+      #   uses: docker/login-action@v2
+      #   with:
+      #     username: ${{ secrets.DOCKER_USERNAME }}
+      #     password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+      # - name: Set up QEMU
+      #   uses: docker/setup-qemu-action@v2
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-        with:
-          platforms: linux/amd64,linux/arm64
+      # - name: Set up Docker Buildx
+      #   uses: docker/setup-buildx-action@v2
+      #   with:
+      #     platforms: linux/amd64,linux/arm64
 
-      - name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          push: true
-          tags: rianfowler/next-app:${{ github.sha }}
+      # - name: Build and push
+      #   uses: docker/build-push-action@v4
+      #   with:
+      #     push: true
+      #     tags: rianfowler/next-app:${{ github.sha }}
 
       - name: Update Chart.yaml and push to main
         id: chart-update
         run: |
-          # Install yq for editing YAML files
-          sudo snap install yq
+          echo "Installing yq..."
+          wget https://github.com/mikefarah/yq/releases/download/v4.6.3/yq_linux_amd64 -O /usr/bin/yq && chmod +x /usr/bin/yq
 
-          # Extract current versions
+          echo "Extracting current versions..."
           current_app_version=$(yq e '.appVersion' charts/next-app-chart/Chart.yaml)
           current_chart_version=$(yq e '.version' charts/next-app-chart/Chart.yaml)
+          echo "Current app version: $current_app_version"
+          echo "Current chart version: $current_chart_version"
 
-          # Set new app version
+          echo "Updating app version..."
           yq e -i '.appVersion = "${{ github.sha }}"' charts/next-app-chart/Chart.yaml
 
-          # Set new chart version
+          echo "Determining new chart version..."
           if [[ $current_chart_version == *"-alpha."* ]]; then
             current_alpha_version=$(echo $current_chart_version | grep -o 'alpha.[0-9]*' | sed 's/alpha.//')
             new_alpha_version=$((current_alpha_version+1))
@@ -55,12 +57,23 @@ jobs:
           else
             new_chart_version="$current_chart_version-alpha.1"
           fi
+          echo "New chart version: $new_chart_version"
 
+          echo "Updating Chart.yaml with new version..."
           yq e -i ".version = \"$new_chart_version\"" charts/next-app-chart/Chart.yaml
 
+          echo "Configuring git..."
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
+
+          echo "Committing and pushing changes..."
           git add charts/next-app-chart/Chart.yaml
           git commit -m "Update Chart version to $new_chart_version"
-          git push
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+
 
