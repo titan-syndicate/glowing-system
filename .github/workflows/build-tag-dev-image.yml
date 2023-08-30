@@ -55,7 +55,16 @@ jobs:
             new_alpha_version=$((current_alpha_version+1))
             new_chart_version=$(echo $current_chart_version | sed "s/alpha.$current_alpha_version/alpha.$new_alpha_version/")
           else
-            new_chart_version="$current_chart_version-alpha.1"
+            # Extract major, minor, and patch versions
+            IFS='.' read -ra VERSION_PARTS <<< "$current_chart_version"
+            major="${VERSION_PARTS[0]}"
+            minor="${VERSION_PARTS[1]}"
+            patch="${VERSION_PARTS[2]}"
+
+            # Increment the patch version
+            patch=$((patch+1))
+
+            new_chart_version="$major.$minor.$patch-alpha.1"
           fi
           echo "New chart version: $new_chart_version"
 
