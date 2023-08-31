@@ -28,16 +28,15 @@ const SoketiTest = () => {
       },
     });
 
-    // 3. Recieve messages when other clients have connected
+    // 2. Set up recieving messages when other clients have connected
     const channel = client.subscribe(CHANNEL_NAME);
 
     channel.bind(CHAT_MESSAGE_EVENT, (message: any) => {
       console.log(`${message.sender} says: ${message.content}`);
     });
 
-    // 2. Send a message saying we've connected
+    // 3. Send a message saying we've connected
     channel.bind("pusher:subscription_succeeded", () => {
-      console.log("sending message");
       channel.trigger(CHAT_MESSAGE_EVENT, {
         sender: "asdf",
         content: "asdffdsa",
