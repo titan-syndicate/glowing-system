@@ -19,13 +19,16 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
+        with:
+          platforms: linux/amd64,linux/arm64
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
-      - name: Generate bake file from docker-compose
-        run: docker buildx bake --set *.platform=linux/amd64,linux/arm64 --set *.push=true --print > bakefile.yml
-        working-directory: ./local-dev-env-image
+      # - name: Generate bake file from docker-compose
+      #   # run: docker buildx bake --set *.platform=linux/amd64,linux/arm64 --set *.push=true --print > bakefile.yml
+      #   run: docker buildx bake --set "*.push=true" --print > bakefile.yml
+      #   working-directory: ./local-dev-env-image
 
       - name: Build and push
         uses: docker/bake-action@v3
