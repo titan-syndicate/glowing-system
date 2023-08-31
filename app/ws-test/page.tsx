@@ -22,6 +22,10 @@ const SoketiTest = () => {
       forceTLS: false,
       enableStats: false,
       enabledTransports: ["ws", "wss"],
+      channelAuthorization: {
+        endpoint: "/ws-test/auth",
+        transport: "ajax",
+      },
     });
 
     // 3. Recieve messages when other clients have connected
