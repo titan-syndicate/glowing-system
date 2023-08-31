@@ -3,6 +3,7 @@
 import { Button, Container } from "@mui/material";
 import PusherJS, { Channel } from "pusher-js";
 import { useCallback, useEffect, useState } from "react";
+import { PUSHER_CONFIG } from "./pusher-config";
 
 PusherJS.logToConsole = true;
 
@@ -14,10 +15,10 @@ const SoketiTest = () => {
 
   useEffect(() => {
     // 1. Connect to PusherJS channel
-    let client = new PusherJS("app_key", {
+    let client = new PusherJS(PUSHER_CONFIG.appKey, {
       cluster: "",
-      wsHost: "127.0.0.1",
-      wsPort: 8080,
+      wsHost: PUSHER_CONFIG.host,
+      wsPort: PUSHER_CONFIG.port,
       forceTLS: false,
       enableStats: false,
       enabledTransports: ["ws", "wss"],
