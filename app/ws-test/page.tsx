@@ -1,14 +1,16 @@
 "use client";
 
-import { Container } from "@mui/material";
-import PusherJS from "pusher-js";
-import { useEffect } from "react";
+import { Button, Container } from "@mui/material";
+import PusherJS, { Channel } from "pusher-js";
+import { useCallback, useEffect, useState } from "react";
 
 PusherJS.logToConsole = true;
 
 const CHAT_MESSAGE_EVENT = "client-new-chat-message";
 
 const SoketiTest = () => {
+  const [channel, setChannel] = useState<Channel>();
+
   useEffect(() => {
     // 1. Connect to PusherJS channel
     let client = new PusherJS("app_key", {
@@ -36,9 +38,26 @@ const SoketiTest = () => {
         // "chat-room"
       );
     });
-  });
 
-  return <Container>Testing</Container>;
+    setChannel(channel);
+  }, []);
+
+  const sendMessageCb = useCallback(
+    () =>
+      channel?.trigger(CHAT_MESSAGE_EVENT, {
+        sender: "asdf",
+        content: "button clicked; message sent",
+      }),
+    [channel]
+  );
+
+  return (
+    <Container>
+      <Button variant="contained" onClick={sendMessageCb}>
+        Send message
+      </Button>
+    </Container>
+  );
 };
 
 export default SoketiTest;
