@@ -8,7 +8,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get upgrade -y
 
 # Install essential tools
-RUN apt-get install -y curl software-properties-common lsb-release sudo gnupg2 xdg-utils
+RUN apt-get install -y curl software-properties-common lsb-release sudo gnupg2 xdg-utils vim
 
 # Install pip for gorilla-cli
 RUN apt-get install -y python3-pip && \

@@ -2,41 +2,45 @@
 layout: default
 title: Continuous Integration
 ---
+Certainly! Here's the updated documentation based on the changes:
 
 # CI Workflows Documentation
 
 Our continuous integration process consists of three main GitHub workflows:
 
-1. **build-tag-push-dev-image**: Responsible for building the application, creating its image, and pushing it to Docker Hub.
-2. **update-helm-repo**: To be invoked only if the infrastructure undergoes any changes.
-3. **helm-upgrade-dev**: Pulls the latest version of the `@latest-dev` tag of the image and performs a Helm upgrade on our development Kubernetes cluster.
+1. **update-dev-fistbump-chat-image**: Responsible for building the application, creating its image, and pushing it to Docker Hub.
+2. **update-helm-repo**: Updates the helm package and creates a pre-release version when appropriate.
+3. **helm-upgrade-dev**: Pulls the latest Docker image using the latest prerelease version as a tag and performs a Helm upgrade on our development Kubernetes cluster.
 
 ## Workflow Details
 
-### 1. `build-tag-push-dev-image`
+### 1. `update-dev-fistbump-chat-image`
 This workflow is the first in the sequence and is essential for every deployment process. Here's what it does:
 
 - Builds the next version of our application.
 - Creates a Docker image of this build.
-- Pushes the Docker image to Docker Hub with the tag `@latest-dev`.
+- Pushes the Docker image to Docker Hub with the tag corresponding to the Git commit hash. This ensures that each image version can be traced back to a specific commit, enhancing traceability and debugging.
 
 ### 2. `update-helm-repo`
-This workflow should only be invoked if there's a change in our infrastructure. If there are no modifications, this step can be skipped because the development environment always defaults to the `@latest-dev` tag. The key responsibilities include:
+This workflow has been enhanced to dynamically manage the versioning of the Helm chart. If there's a current pre-release alpha version in the chart (like `0.0.1-alpha.1`), it will increment the alpha number (to `0.0.1-alpha.2`). If the version is a standard release (like `0.0.1`), it will increment the patch version and append the alpha tag (resulting in `0.0.2-alpha.1`). This strategy ensures that our Helm chart versions are always in sync with the application's lifecycle.
+
+The key responsibilities of this workflow include:
 
 - Updating the Helm repository with any new changes.
+- Incrementing the Helm chart version based on the logic mentioned above.
 
 ### 3. `helm-upgrade-dev`
 This workflow carries out the following:
 
 - Calls the `helm upgrade` command on the development Kubernetes cluster.
-- Ensures that the cluster pulls down the latest version of the image tagged `@latest-dev`.
+- Ensures that the cluster pulls down the latest pre-release version.
 
 ## Workflow Sequence
 
 ```mermaid
 graph TD
-    A[Start] --> B[build-tag-push-dev-image]
-    B --> C[Push image tagged with @latest-dev tag to Docker Hub]
+    A[Start] --> B[update-dev-fistbump-chat-image]
+    B --> C[Push image tagged with Git commit hash to Docker Hub]
     D[Infrastructure Change?]
     C --> D
     D -- Yes --> E[update-helm-repo]
@@ -45,57 +49,49 @@ graph TD
     F --> G[End]
 ```
 
-# Running GitHub Actions Locally with `act`
+This updated documentation provides a clear view of the changes introduced, making it easier for your team to understand and follow the updated CI workflows.
 
-`act` allows you to run your GitHub Actions workflows locally. This is beneficial for testing your workflows before pushing to your repository. This guide will walk you through the process of setting up and using `act` locally.
+# Running GitHub Actions Locally
+
+Running your GitHub Actions workflows locally ensures that they perform correctly before pushing them to your repository. This guide covers the process, from setup to execution.
 
 ## Prerequisites
 
-- **Docker Desktop**: Ensure you have Docker Desktop installed and running. It's a dependency for `act`.
-  - [Download Docker Desktop](https://www.docker.com/products/docker-desktop)
+- **Docker Dev Container**: Before getting started, make sure you're operating within the Docker Dev Container.
+  - [Launch Docker Dev Environment](https://open.docker.com/dashboard/dev-envs?url=https://github.com/titan-syndicate/glowing-system)
 
-- **Homebrew**: You'll need the Homebrew package manager to install some tools.
-  - [Install Homebrew](https://brew.sh/)
+- **npm**: If you're in a new dev container, remember to execute `npm install`.
 
-## Installation Steps
-
-1. **Install `act` with Homebrew**:
-```bash
-brew install act
-```
-
-2. **Install `vlt` (Vault)**:
-```bash
-brew tap hashicorp/tap
-brew install vlt
-```
+- **HashiCorp Vault**: Being configured with HashiCorp Vault Secrets is essential. Running GitHub Actions locally will require several secrets.
 
 ## Configuration
 
-1. **Log in to `vlt`**:
+1. **Sync Secrets**:
+Run the following npm script to generate a `.env.secrets` file:
 ```bash
-vlt login
+npm run sync-secrets
+```
+Ensure this file is populated with genuine values, not error messages from Vault.
+
+## Running Workflows
+
+1. **Access NPM Scripts**:
+Access an interactive list of npm scripts using:
+```bash
+npm run interactive
+```
+or the shorter:
+```bash
+npm run i
 ```
 
-2. **Generate a `.env` file with `vlt`**:
-At the root of your repository, there's a bash file `make-env.sh` that will utilize `vlt` to create a `.env` file. Run it:
-```bash
-./make-env.sh
-```
-This `.env` file contains secrets that `act` will use to simulate GitHub's secret storage mechanism.
+2. **Select a Workflow**:
+When searching for a GitHub Action workflow to run, they all start with `wf-`. Use the interactive menu, and input `wf-` to narrow down your choices.
 
-## Running Workflows with `act`
+## Tips and Tricks
 
-1. **List available workflows**:
-You can see a list of all the workflows in your repository with:
-```bash
-act -l
-```
+- All GitHub Action workflows are prefixed with `wf-`, making it easy to locate them in the interactive menu.
 
-2. **Run a specific workflow**:
-To run a particular workflow, use the `-j` flag followed by the workflow name. Ensure you reference the `.env` file for secrets:
-```bash
-act --secret-file .env -j helm-upgrade-dev
-```
+- Always verify the `.env.secrets` file for its content after running the `sync-secrets` npm script. This step ensures there's no error message from Vault Secrets, and the secrets are fetched correctly.
 
-By following the above steps, you can simulate GitHub Actions workflows on your local machine, ensuring they run correctly before committing them to your repository.
+By adhering to these steps, you can simulate GitHub Actions workflows locally, ensuring they're free of issues before pushing them to your repository.

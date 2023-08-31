@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: next-app
-        image: rianfowler/next-app:latest-dev
+        image: rianfowler/next-app:{{ .Chart.AppVersion }}
         ports:
         - containerPort: 3000
