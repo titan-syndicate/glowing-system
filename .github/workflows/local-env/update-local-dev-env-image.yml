@@ -25,15 +25,10 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
-      # - name: Generate bake file from docker-compose
-      #   # run: docker buildx bake --set *.platform=linux/amd64,linux/arm64 --set *.push=true --print > bakefile.yml
-      #   run: docker buildx bake --set "*.push=true" --print > bakefile.yml
-      #   working-directory: ./local-dev-env-image
-
       - name: Build and push
-        uses: docker/bake-action@v3
+        uses: docker/build-push-action@v4
         with:
           push: true
           tags: rianfowler/glowing-system-dev-env-test:latest
-        working-directory: ./local-dev-env-image
+          file: local-dev-env-image/Dockerfile
 
