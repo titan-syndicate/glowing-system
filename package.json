@@ -39,6 +39,7 @@
     "typescript": "5.2.2"
   },
   "devDependencies": {
+    "encoding": "^0.1.13",
     "inquirer": "^9.2.10",
     "inquirer-autocomplete-prompt": "^3.0.0",
     "prisma": "^5.2.0"
