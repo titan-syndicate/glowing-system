@@ -1,6 +1,6 @@
 import Pusher from "pusher";
 import { PUSHER_CONFIG } from "../pusher-config";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const { appId, host, port, appKey, secret } = PUSHER_CONFIG;
 
@@ -12,14 +12,15 @@ export async function POST(request: NextRequest) {
     host,
     port: `${port}`,
   });
+  const data = await request.formData();
 
-  const data = await request.json();
+  // TODO: Error handling if `socket_id` or `channel_name` don't exist
 
   // https://pusher.com/docs/channels/server_api/authorizing-users/#implementing-the-authorization-endpoint-for-a-private-channel
-  const socketId = data.socket_id;
-  const channel = data.channel_name;
+  const socketId = data.get("socket_id") as string;
+  const channel = data.get("channel_name") as string;
   // This authenticates every user. Don't do this in production!
   const authResponse = pusher.authorizeChannel(socketId, channel);
 
-  return new Response(JSON.stringify(authResponse));
+  return NextResponse.json(authResponse);
 }
