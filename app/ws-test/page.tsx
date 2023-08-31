@@ -11,10 +11,10 @@ const CHAT_MESSAGE_EVENT = "client-new-chat-message";
 const SoketiTest = () => {
   useEffect(() => {
     // 1. Connect to PusherJS channel
-    let client = new PusherJS("app-key", {
+    let client = new PusherJS("app_key", {
       cluster: "",
       wsHost: "127.0.0.1",
-      wsPort: 6001,
+      wsPort: 8080,
       forceTLS: false,
       enableStats: false,
       enabledTransports: ["ws", "wss"],
