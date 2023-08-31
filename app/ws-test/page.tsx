@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 PusherJS.logToConsole = true;
 
 const CHAT_MESSAGE_EVENT = "client-new-chat-message";
+const CHANNEL_NAME = "private-chat-room";
 
 const SoketiTest = () => {
   const [channel, setChannel] = useState<Channel>();
@@ -23,7 +24,7 @@ const SoketiTest = () => {
     });
 
     // 3. Recieve messages when other clients have connected
-    const channel = client.subscribe("chat-room");
+    const channel = client.subscribe(CHANNEL_NAME);
 
     channel.bind(CHAT_MESSAGE_EVENT, (message: any) => {
       console.log(`${message.sender} says: ${message.content}`);
@@ -32,11 +33,10 @@ const SoketiTest = () => {
     // 2. Send a message saying we've connected
     channel.bind("pusher:subscription_succeeded", () => {
       console.log("sending message");
-      channel.trigger(
-        CHAT_MESSAGE_EVENT,
-        { sender: "asdf", content: "asdffdsa" }
-        // "chat-room"
-      );
+      channel.trigger(CHAT_MESSAGE_EVENT, {
+        sender: "asdf",
+        content: "asdffdsa",
+      });
     });
 
     setChannel(channel);
