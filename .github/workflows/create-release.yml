@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       versionIncrement:
+        type: choice
         description: 'Version increment type'
         required: true
         default: 'prerelease'
