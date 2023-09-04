@@ -86,9 +86,16 @@ jobs:
         git commit -m "Update Chart version to $new_chart_version"
 
     - name: Create Pull Request
+      id: create-pr
       uses: peter-evans/create-pull-request@v3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        title: "Create pre-release Chart with version ${{ steps.chart-update.outputs.new_chart_version }}"
-        commit-message: "Update Chart version to ${{ steps.chart-update.outputs.new_chart_version }}"
+        title: "Chart Update: ${{ steps.chart-update.outputs.new_chart_version }}"
+        commit-message: "Update Chart and App version to ${{ steps.chart-update.outputs.new_chart_version }}"
+        body: |
+          ### Changes:
+          - Chart Version: ${{ steps.chart-update.outputs.new_chart_version }}
+          - App Version:
+            ${{ steps.chart-update.outputs.new_app_version }}
         branch: "update-helm-chart-${{ steps.chart-update.outputs.new_chart_version }}"
+
