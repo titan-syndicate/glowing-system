@@ -1,9 +1,10 @@
-name: Increment Helm chart version, package, and push to helm repo
+name: Update helm repo
 
 on:
-  push:
-    paths:
-      - 'charts/next-app-chart/**'
+  workflow_run:
+    workflows: ["update-app-image"]
+    types:
+      - completed
 
 jobs:
   update-helm-repo:
