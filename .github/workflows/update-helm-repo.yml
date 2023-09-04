@@ -98,11 +98,10 @@ jobs:
         cd glowing-system-charts
         helm repo index . --url https://titan-syndicate.github.io/glowing-system-charts/
 
-    - name: Commit and Push changes
-      run: |
-        cd glowing-system-charts
-        git config user.name "GitHub Action"
-        git config user.email "action@github.com"
-        git add .
-        git commit -m "Update Helm Chart"
-        git push
+    - name: Push to another repo
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GLOWING_SYSTEM_CHARTS_GITHUB_TOKEN }}
+        repository: titan-syndicate/glowing-system-charts
+        branch: gh-pages
+
