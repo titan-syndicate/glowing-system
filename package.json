@@ -12,6 +12,7 @@
     "start": "next start",
     "sync-secrets": "./scripts/sync-secrets.sh",
     "wf-create-prerelease-pr": "act --secret-file .env.secrets -j create-release-pr --input versionIncrement=prerelease",
+    "wf-create-patch-release": "act --secret-file .env.secrets -j create-release-pr --input versionIncrement=patch",
     "wf-update-local-dev-image": "act --secret-file .env.secrets -j update-local-dev-image",
     "wf-helm-upgrade-dev": "act --secret-file .env.secrets -j helm-upgrade-dev",
     "wf-update-helm-repo": "act --secret-file .env.secrets -j update-helm-repo",
