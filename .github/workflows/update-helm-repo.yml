@@ -20,17 +20,17 @@ jobs:
       with:
         version: 'latest'
 
-    - name: Lint and Package Helm Chart
-      run: |
-        helm lint charts/next-app-chart
-        helm package charts/next-app-chart -d ./
-
     - name: Clone target repo
       uses: actions/checkout@v3
       with:
         repository: titan-syndicate/glowing-system-charts
         path: glowing-system-charts
         ref: main
+
+    - name: Lint and Package Helm Chart
+      run: |
+        helm lint charts/next-app-chart
+        helm package charts/next-app-chart -d ./glowing-system-charts
 
     - name: Check for existing version in target repo
       run: |
@@ -43,8 +43,6 @@ jobs:
 
     - name: Copy package to target repo and Update Helm Repo
       run: |
-        cp *.tgz glowing-system-charts/
-        cd glowing-system-charts
         helm repo index . --url https://titan-syndicate.github.io/glowing-system-charts/
 
     - name: Push to another repo
