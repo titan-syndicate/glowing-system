@@ -1,0 +1,94 @@
+name: Create release pull request
+
+on:
+  workflow_dispatch:
+    inputs:
+      versionIncrement:
+        description: 'Version increment type'
+        required: true
+        default: 'prerelease'
+        options:
+        - patch
+        - minor
+        - major
+        - prerelease
+
+jobs:
+  create-release-pr:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout source repo
+      uses: actions/checkout@v3
+
+    - name: Set up Helm
+      uses: azure/setup-helm@v3
+      with:
+        version: 'latest'
+
+    - name: Update Chart.yaml and push to main
+      id: chart-update
+      run: |
+        echo "Installing yq..."
+        wget https://github.com/mikefarah/yq/releases/download/v4.6.3/yq_linux_amd64 -O /usr/bin/yq && chmod +x /usr/bin/yq
+
+        echo "Extracting current versions..."
+        current_chart_version=$(yq e '.version' charts/next-app-chart/Chart.yaml)
+        echo "Current chart version: $current_chart_version"
+
+        echo "Determining new chart version..."
+        if [[ "${{ github.event.inputs.versionIncrement }}" == "prerelease" ]]; then
+          if [[ $current_chart_version == *"-alpha."* ]]; then
+            current_alpha_version=$(echo $current_chart_version | grep -o 'alpha.[0-9]*' | sed 's/alpha.//')
+            new_alpha_version=$((current_alpha_version+1))
+            new_chart_version=$(echo $current_chart_version | sed "s/alpha.$current_alpha_version/alpha.$new_alpha_version/")
+          else
+            new_chart_version="$current_chart_version-alpha.1"
+          fi
+        else
+          IFS='.' read -ra VERSION_PARTS <<< "$current_chart_version"
+          major="${VERSION_PARTS[0]}"
+          minor="${VERSION_PARTS[1]}"
+          patch="${VERSION_PARTS[2]}"
+
+          case "${{ github.event.inputs.versionIncrement }}" in
+            major)
+              major=$((major+1))
+              minor=0
+              patch=0
+              ;;
+            minor)
+              minor=$((minor+1))
+              patch=0
+              ;;
+            patch)
+              patch=$((patch+1))
+              ;;
+          esac
+
+          new_chart_version="$major.$minor.$patch"
+        fi
+        echo "New chart version: $new_chart_version"
+
+        echo "Updating Chart.yaml with new version..."
+        yq e -i ".version = \"$new_chart_version\"" charts/next-app-chart/Chart.yaml
+        yq e -i ".appVersion = \"$new_chart_version\"" charts/next-app-chart/Chart.yaml
+
+        if [[ "${{ github.event.inputs.versionIncrement }}" == "prerelease" ]]; then
+          yq e -i ".appVersion = \"${{ github.sha }}\"" charts/next-app-chart/Chart.yaml
+        fi
+
+        echo "Configuring git..."
+        git config --global user.name "GitHub Action"
+        git config --global user.email "action@github.com"
+
+        echo "Committing changes..."
+        git add charts/next-app-chart/Chart.yaml
+        git commit -m "Update Chart version to $new_chart_version"
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        title: "Create pre-release Chart with version ${{ steps.chart-update.outputs.new_chart_version }}"
+        commit-message: "Update Chart version to ${{ steps.chart-update.outputs.new_chart_version }}"
+        branch: "update-helm-chart-${{ steps.chart-update.outputs.new_chart_version }}"
