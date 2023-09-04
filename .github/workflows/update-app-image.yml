@@ -1,4 +1,4 @@
-name: Update app image
+name: update-app-image
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: Upgrade dev environment
+name: upgrade-dev-environment
 
 on:
   workflow_run:

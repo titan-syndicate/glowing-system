@@ -1,4 +1,4 @@
-name: Update helm repo
+name: update-helm-repo
 
 on:
   workflow_run:
