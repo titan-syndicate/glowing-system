@@ -14,9 +14,8 @@
     "wf-create-prerelease-pr": "act --secret-file .env.secrets -j create-release-pr --input versionIncrement=prerelease",
     "wf-create-patch-release": "act --secret-file .env.secrets -j create-release-pr --input versionIncrement=patch",
     "wf-update-local-dev-image": "act --secret-file .env.secrets -j update-local-dev-image",
-    "wf-helm-upgrade-dev": "act --secret-file .env.secrets -j helm-upgrade-dev",
-    "wf-update-helm-repo": "act --secret-file .env.secrets -j update-helm-repo",
-    "wf-update-dev-fistbump-chat-image": "act --secret-file .env.secrets -j update-dev-fistbump-chat-image"
+    "wf-upgrade-dev-environment": "act --secret-file .env.secrets -j upgrade-dev-environment",
+    "wf-update-helm-repo": "act --secret-file .env.secrets -j update-helm-repo"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",

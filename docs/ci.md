@@ -10,7 +10,7 @@ Our continuous integration process consists of three main GitHub workflows:
 
 1. **update-dev-fistbump-chat-image**: Responsible for building the application, creating its image, and pushing it to Docker Hub.
 2. **update-helm-repo**: Updates the helm package and creates a pre-release version when appropriate.
-3. **helm-upgrade-dev**: Pulls the latest Docker image using the latest prerelease version as a tag and performs a Helm upgrade on our development Kubernetes cluster.
+3. **upgrade-dev-environment**: Pulls the latest Docker image using the latest prerelease version as a tag and performs a Helm upgrade on our development Kubernetes cluster.
 
 ## Workflow Details
 
@@ -29,7 +29,7 @@ The key responsibilities of this workflow include:
 - Updating the Helm repository with any new changes.
 - Incrementing the Helm chart version based on the logic mentioned above.
 
-### 3. `helm-upgrade-dev`
+### 3. `upgrade-dev-environment`
 This workflow carries out the following:
 
 - Calls the `helm upgrade` command on the development Kubernetes cluster.
@@ -44,7 +44,7 @@ graph TD
     D[Infrastructure Change?]
     C --> D
     D -- Yes --> E[update-helm-repo]
-    D -- No --> F[helm-upgrade-dev]
+    D -- No --> F[upgrade-dev-environment]
     E --> F
     F --> G[End]
 ```
