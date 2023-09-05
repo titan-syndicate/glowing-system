@@ -30,6 +30,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
+          file: local-dev-env/Dockerfile
           push: true
           tags: rianfowler/glowing-system-dev-env:latest,rianfowler/glowing-system-dev-env:${{ github.sha }}
+
 
