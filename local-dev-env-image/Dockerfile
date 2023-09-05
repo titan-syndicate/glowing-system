@@ -4,15 +4,18 @@ FROM ubuntu:latest
 # Set environment variables to non-interactive (this ensures that installation does not prompt user for inputs)
 ENV DEBIAN_FRONTEND=noninteractive
 
+# create and set non root user
+RUN useradd -ms /bin/zsh developer
+USER developer
+
 # Run the system update
-RUN apt-get update && apt-get upgrade -y
+RUN sudo apt-get update && sudo apt-get upgrade -y
 
 # Install essential tools
-RUN apt-get install -y curl software-properties-common lsb-release sudo gnupg2 xdg-utils vim jq
+RUN sudo apt-get install -y curl software-properties-common lsb-release sudo gnupg2 xdg-utils vim jq postgresql-client docker.io zsh python3-pip
 
-# Install pip for gorilla-cli
-RUN apt-get install -y python3-pip && \
-  pip3 install gorilla-cli
+# Install gorilla-cli
+RUN pip3 install gorilla-cli
 
 # Install Helm and kubectl
 RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
@@ -38,21 +41,12 @@ RUN curl -LO https://github.com/derailed/k9s/releases/download/v0.25.7/k9s_Linux
 # Install vlt secrets
 RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg && \
   echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list && \
-  apt-get update && \
-  apt-get install -y vlt
+  sudo apt-get update && \
+  sudo apt-get install -y vlt
 
 # Install act
 RUN curl -s https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash
 RUN sudo mv ./bin/act /usr/local/bin/act
-
-# Install psql client
-RUN apt-get install -y postgresql-client
-
-# Install Docker to support Docker-in-Docker
-RUN apt-get install -y docker.io
-
-# Install ZSH
-RUN apt-get update && apt-get install -y zsh
 
 # Install oh-my-zsh
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
@@ -72,7 +66,7 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | s
 RUN chsh -s $(which zsh)
 
 # Clean up APT cache for reducing the image size
-RUN apt-get clean && \
+RUN sudo apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ENTRYPOINT [ "zsh" ]
