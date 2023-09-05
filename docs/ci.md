@@ -12,7 +12,7 @@ Our continuous integration process consists of three main GitHub workflows:
 
 It's recommended to update the chart versions with the GitHub action. Only prerelease versions are currently supported.
 
-After mergings the release pr, run the **deploy-release** workflow and GitHub Actions will do the rest.
+After merging the release pr, run the **deploy-release** workflow and GitHub Actions will do the rest.
 
 # Running GitHub Actions Locally
 
