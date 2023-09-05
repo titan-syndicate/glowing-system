@@ -16,14 +16,17 @@ RUN apt-get install -y python3-pip && \
 
 # Install Helm and kubectl
 RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
-    && chmod +x kubectl \
-    && sudo mv kubectl /usr/local/bin/
+  && chmod +x kubectl \
+  && sudo mv kubectl /usr/local/bin/
 RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 # Install Node
-RUN apt-get update && apt-get install -y curl software-properties-common \
- && curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
- && apt-get install -y nodejs
+RUN NODE_MAJOR=20 \
+  && sudo apt-get update \
+  && sudo apt-get install -y ca-certificates curl gnupg \
+  && sudo mkdir -p /etc/apt/keyrings \
+  && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+  && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
 
 # Since k9s uses pacman which is an Arch Linux package manager and we are using Ubuntu, this step requires some workarounds.
 # To simplify the Dockerfile, I recommend downloading k9s from its GitHub releases page directly.
