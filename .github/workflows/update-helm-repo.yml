@@ -31,6 +31,7 @@ jobs:
         ref: main
         repository: titan-syndicate/glowing-system-charts
         path: glowing-system-charts
+        token: ${{ secrets.GLOWING_SYSTEM_CHARTS_GITHUB_TOKEN }}
 
     - name: Check for existing version in target repo
       run: |
