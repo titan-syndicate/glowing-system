@@ -53,9 +53,6 @@ RUN apt-get update && apt-get install -y zsh
 # Install oh-my-zsh
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 
-# Set ZSH as the default shell
-RUN chsh -s $(which zsh)
-
 # Install gh CLI
 RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
   && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
@@ -66,6 +63,9 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | s
 #############################################
 ### DO NOT ADD ANYTHING BELOW THIS LINE #####
 #############################################
+
+# Set ZSH as the default shell
+RUN chsh -s $(which zsh)
 
 # Clean up APT cache for reducing the image size
 RUN apt-get clean && \
