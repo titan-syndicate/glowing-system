@@ -8,7 +8,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get upgrade -y
 
 # Install essential tools
-RUN apt-get install -y curl software-properties-common lsb-release sudo gnupg2 xdg-utils vim jq
+RUN apt-get install -y curl software-properties-common lsb-release  gnupg2 xdg-utils vim jq ca-certificates gnupg
 
 # Install pip for gorilla-cli
 RUN apt-get install -y python3-pip && \
@@ -17,13 +17,16 @@ RUN apt-get install -y python3-pip && \
 # Install Helm and kubectl
 RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
   && chmod +x kubectl \
-  && sudo mv kubectl /usr/local/bin/
+  &&  mv kubectl /usr/local/bin/
 RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 # Install Node
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash \
-  && nvm install 20 \
-  && nvm use 20
+RUN mkdir -p /etc/apt/keyrings \
+  && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+  && NODE_MAJOR=20 \
+  && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
+  && apt-get update \
+  && apt-get install nodejs -y
 
 # Since k9s uses pacman which is an Arch Linux package manager and we are using Ubuntu, this step requires some workarounds.
 # To simplify the Dockerfile, I recommend downloading k9s from its GitHub releases page directly.
@@ -39,8 +42,8 @@ RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/sh
   apt-get install -y vlt
 
 # Install act
-RUN curl -s https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash
-RUN sudo mv ./bin/act /usr/local/bin/act
+RUN curl -s https://raw.githubusercontent.com/nektos/act/master/install.sh |  bash
+RUN  mv ./bin/act /usr/local/bin/act
 
 # Install psql client
 RUN apt-get install -y postgresql-client
@@ -55,11 +58,11 @@ RUN apt-get update && apt-get install -y zsh
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 
 # Install gh CLI
-RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
-  && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-  && sudo apt update \
-  && sudo apt install gh -y
+RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg |  dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+  &&  chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" |  tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+  &&  apt update \
+  &&  apt install gh -y
 
 #############################################
 ### DO NOT ADD ANYTHING BELOW THIS LINE #####
