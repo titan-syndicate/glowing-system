@@ -13,7 +13,7 @@
     "sync-secrets": "./scripts/sync-secrets.sh",
     "wf-create-prerelease-pr": "act --secret-file .env.secrets -j create-release-pr --input versionIncrement=prerelease",
     "wf-create-patch-release": "act --secret-file .env.secrets -j create-release-pr --input versionIncrement=patch",
-    "wf-deploy-release": "act --secret-file .env.secrets -j deploy-release"
+    "wf-deploy-release": "act --secret-file .env.secrets -j upgrade-dev-environment"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",

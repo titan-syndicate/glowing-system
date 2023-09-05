@@ -1,9 +1,7 @@
 name: deploy-release
 
 on:
-  push:
-    paths:
-    - 'charts/next-app-chart/Chart.yaml'
+  workflow_dispatch:
 
 jobs:
   update-app-image:
@@ -43,10 +41,10 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
+          context: .
           push: true
           tags: |
-            rianfowler/next-app:${{ github.sha }}
-            ${{ (steps.extract_version.outputs.app_version != github.sha) && format('rianfowler/next-app:{0}', steps.extract_version.outputs.app_version) || '' }}
+            rianfowler/next-app:${{ steps.extract_version.outputs.app_version }}
 
   update-helm-repo:
     needs: update-app-image
