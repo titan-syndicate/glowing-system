@@ -9,7 +9,7 @@ on:
 jobs:
   update-helm-repo:
     runs-on: ubuntu-latest
-    if: ${{ github.event.act || github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
     - name: Set up Helm
@@ -58,8 +58,11 @@ jobs:
         git commit -m "Add new chart version"
 
     - name: Push to another repo
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.GLOWING_SYSTEM_CHARTS_GITHUB_TOKEN }}
-        repository: titan-syndicate/glowing-system-charts
+      run: |
+        # Add remote repository
+        cd $GITHUB_WORKSPACE/glowing-system-charts
+        git remote add target_repo https://x-access-token:${{ secrets.GLOWING_SYSTEM_CHARTS_GITHUB_TOKEN }}@github.com/titan-syndicate/glowing-system-charts.git
+
+        # Push changes
+        git push target_repo HEAD:main
 
