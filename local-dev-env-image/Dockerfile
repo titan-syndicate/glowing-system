@@ -20,9 +20,10 @@ RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/s
     && sudo mv kubectl /usr/local/bin/
 RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
-# Install Node 18
-RUN curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash - && \
-  apt-get install -y nodejs
+# Install Node
+RUN apt-get update && apt-get install -y curl software-properties-common \
+ && curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
+ && apt-get install -y nodejs
 
 # Since k9s uses pacman which is an Arch Linux package manager and we are using Ubuntu, this step requires some workarounds.
 # To simplify the Dockerfile, I recommend downloading k9s from its GitHub releases page directly.
