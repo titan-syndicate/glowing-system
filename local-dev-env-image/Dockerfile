@@ -4,12 +4,12 @@ FROM ubuntu:latest
 # Set environment variables to non-interactive (this ensures that installation does not prompt user for inputs)
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Run the system update
+RUN apt-get update && apt-get upgrade -y
+
 # create and set non root user
 RUN useradd -ms /bin/zsh developer
 USER developer
-
-# Run the system update
-RUN sudo apt-get update && sudo apt-get upgrade -y
 
 # Install essential tools
 RUN sudo apt-get install -y curl software-properties-common lsb-release sudo gnupg2 xdg-utils vim jq postgresql-client docker.io zsh python3-pip
