@@ -13,16 +13,21 @@ function Layout({
   const router = useRouter();
 
   useEffect(() => {
+    // don't enforce login in dev mode unless FORCE_PROTECTED is set to true
+    if (process.env.NODE_ENV === "development" && process.env.NEXT_PUBLIC_FORCE_PROTECTED !== "true") {
+      return;
+    }
+
     if (status === "unauthenticated") {
       router.push('/login');
     }
   }, [status, router]);
 
-  if (status === "loading") {
+  if (status === "loading" || status === "unauthenticated") {
     return <div>Loading...</div>;
   }
   return (
-      <>{children}</>
+    <>{children}</>
   )
 }
 

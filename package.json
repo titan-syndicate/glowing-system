@@ -4,10 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev-protected": "NEXT_PUBLIC_FORCE_PROTECTED=true next dev",
     "build": "next build",
     "i": "npm run interactive",
     "interactive": "npm run list-scripts",
     "lint": "next lint",
+    "lint-fix": "next lint --fix",
     "list-scripts": "node scripts/interactive-npm-scripts.js",
     "start": "next start",
     "sync-secrets": "./scripts/sync-secrets.sh",
