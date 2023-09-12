@@ -14,6 +14,7 @@ function Layout({
 
   useEffect(() => {
     // don't enforce login in dev mode unless FORCE_PROTECTED is set to true
+    debugger;
     if (process.env.NODE_ENV === "development" && process.env.NEXT_PUBLIC_FORCE_PROTECTED !== "true") {
       return;
     }
@@ -23,7 +24,7 @@ function Layout({
     }
   }, [status, router]);
 
-  if (status === "loading" || status === "unauthenticated") {
+  if (status === "loading") {
     return <div>Loading...</div>;
   }
   return (
