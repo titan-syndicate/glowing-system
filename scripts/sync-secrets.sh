@@ -10,6 +10,8 @@ vlt login
 echo "DOCKER_USERNAME=$(vlt secrets get -o="titan-syndicate" --app-name="glowing-system" --project="rianfowler-project" --plaintext DOCKER_USERNAME)" > .env.secrets
 echo "DOCKER_PASSWORD=$(vlt secrets get -o="titan-syndicate" --app-name="glowing-system" --project="rianfowler-project" --plaintext DOCKER_PASSWORD)" >> .env.secrets
 echo "GITHUB_TOKEN=$(vlt secrets get -o="titan-syndicate" --app-name="glowing-system" --project="rianfowler-project" --plaintext TS_GITHUB_TOKEN)" >> .env.secrets
+echo "GITHUB_CLIENT_ID=$(vlt secrets get -o="titan-syndicate" --app-name="glowing-system" --project="rianfowler-project" --plaintext LOCALDEV_GITHUB_CLIENT_ID)" >> .env.local
+echo "GITHUB_CLIENT_SECRET=$(vlt secrets get -o="titan-syndicate" --app-name="glowing-system" --project="rianfowler-project" --plaintext LOCALDEV_GITHUB_SECRET)" >> .env.local
 echo "GLOWING_SYSTEM_CHARTS_GITHUB_TOKEN=$(vlt secrets get -o="titan-syndicate" --app-name="glowing-system" --project="rianfowler-project" --plaintext GLOWING_SYSTEM_CHARTS_GITHUB_TOKEN)" >> .env.secrets
 
 # Retrieve the KUBECONFIG_64 variable from vlt
