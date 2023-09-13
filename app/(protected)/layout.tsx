@@ -12,9 +12,13 @@ function Layout({
   const { data: session, status } = useSession();
   const router = useRouter();
 
+  console.log("session");
+  console.log(session);
+
   useEffect(() => {
     // don't enforce login in dev mode unless FORCE_PROTECTED is set to true
     if (process.env.NODE_ENV === "development" && process.env.NEXT_PUBLIC_FORCE_PROTECTED !== "true") {
+      console.log('Auth skipped for local dev. To run with auth locally sync-secrets then npm run dev-protected');
       return;
     }
 
