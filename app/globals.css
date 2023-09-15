@@ -17,11 +17,12 @@
 } */
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  --color-border-primary: #000000;
+  --color-bg-primary: #ffffff; /* Default to light mode */
+  --color-text-secondary: #000000;
+}
+.dark {
+  --color-border-primary: #ffffff;
+  --color-bg-primary: #000000; /* Override for dark mode */
+  --color-text-secondary: #ffffff;
 }
