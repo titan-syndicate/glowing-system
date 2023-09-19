@@ -32,7 +32,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Example() {
+export default function ChatLayout({children } : { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
@@ -176,8 +176,8 @@ export default function Example() {
           </a>
         </div>
 
-        <main className="py-10 lg:pl-72">
-          <div className="px-4 sm:px-6 lg:px-8">{/* Your content */}</div>
+        <main className="h-screen py-10 lg:pl-72">
+          <div className="h-full px-4 sm:px-6 lg:px-8">{children}</div>
         </main>
       </div>
     </>
