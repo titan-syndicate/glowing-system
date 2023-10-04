@@ -64,6 +64,19 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg |  
   &&  apt update \
   &&  apt install gh -y
 
+# Install Go
+
+ENV GO_VERSION 1.17.2
+ENV GOROOT=/usr/local/go
+ENV GOPATH=$HOME/go
+ENV PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+ENV GO_URL https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz
+
+# Install Go
+RUN curl -LO ${GO_URL} \
+    && tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz \
+    && rm go${GO_VERSION}.linux-amd64.tar.gz
+
 #############################################
 ### DO NOT ADD ANYTHING BELOW THIS LINE #####
 #############################################
