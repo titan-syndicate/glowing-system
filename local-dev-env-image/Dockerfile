@@ -66,7 +66,7 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg |  
 
 # Install Go
 
-ENV GO_VERSION 1.17.2
+ENV GO_VERSION 1.21.1
 ENV GOROOT=/usr/local/go
 ENV GOPATH=$HOME/go
 ENV PATH=$GOPATH/bin:$GOROOT/bin:$PATH
