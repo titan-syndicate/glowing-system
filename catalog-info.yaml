@@ -5,8 +5,7 @@ metadata:
   description: The place to be, for great artists
   labels:
     example.com/custom: custom_label_value
-  annotations:
-    circleci.com/project-slug: circleci/circleci/Tvi5amfQm34yJAWpcEh1Ct/7sfMPJ27kf18v48EhsKM5M
+
   tags:
     - java
   links:
