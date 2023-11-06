@@ -6,7 +6,6 @@ metadata:
   labels:
     example.com/custom: custom_label_value
   annotations:
-    example.com/service-discovery: artistweb
     circleci.com/project-slug: circleci/Tvi5amfQm34yJAWpcEh1Ct/7sfMPJ27kf18v48EhsKM5M
   tags:
     - java
