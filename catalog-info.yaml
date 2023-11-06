@@ -7,7 +7,7 @@ metadata:
     example.com/custom: custom_label_value
   annotations:
     example.com/service-discovery: artistweb
-    circleci.com/project-slug: github/titan-syndicate/glowing-system
+    circleci.com/project-slug: cci-p7yyq/glowing-system
   tags:
     - java
   links:
