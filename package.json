@@ -42,7 +42,7 @@
     "typescript": "5.2.2"
   },
   "devDependencies": {
-    "inquirer": "^9.2.10",
+    "inquirer": "^9.2.12",
     "inquirer-autocomplete-prompt": "^3.0.0",
     "prisma": "^5.2.0"
   }
